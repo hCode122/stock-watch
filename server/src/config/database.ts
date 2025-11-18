@@ -14,6 +14,7 @@ export const pool = new Pool({
 
 export const testConnection = async () => {
     try {
+        console.log([pool])
         const client = await pool.connect();
         console.log('Connected successfully')
         client.release()

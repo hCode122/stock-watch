@@ -7,7 +7,8 @@ export const initDatabase = async () => {
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                 email VARCHAR(255) UNIQUE NOT NULL,
                 password_hash VARCHAR(255) NOT NULL,
-                username VARCHAR(100) UNIQUE NOT NULL,
+                firstname VARCHAR(100) NOT NULL,
+                lastname VARCHAR(100) NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );    
@@ -91,9 +92,9 @@ export const initDatabase = async () => {
       CREATE INDEX IF NOT EXISTS idx_market_overview_type ON market_overview(data_type);
     `);
 
-    console.log('✅ All database tables created successfully');
+    console.log('All database tables created successfully');
   } catch (error) {
-    console.error('❌ Error initializing database:', error);
+    console.error('Error initializing database:', error);
     throw error;
   }
 };
