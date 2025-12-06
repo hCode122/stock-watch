@@ -1,5 +1,5 @@
 import { pool } from "../config/database";
-import { SignupData, SigninData, User } from "../types/authTypes";
+import { SignupData, SigninData, User, AuthResponse } from "../types/authTypes";
 import bcrypt from 'bcryptjs';
 
 export const userService = {
@@ -21,7 +21,7 @@ export const userService = {
         return result.rows[0]
     },
 
-    async findByEmail(email : string): Promise<SignupData | null> {
+    async findByEmail(email : string): Promise<User | null> {
         const result = await pool.query(`
             SELECT * FROM users WHERE email = $1     
         `, [email])
@@ -31,5 +31,20 @@ export const userService = {
 
     async verifyPassword(plainPassword: string, hashedPassword: string): Promise<boolean> {
         return await bcrypt.compare(plainPassword, hashedPassword);
+    },
+
+    async authenticateUser(email: string, password: string): Promise<Omit<User, 'password_hash'>
+    | null> {
+        const user = await this.findByEmail(email);
+        if (!user) {
+        return null;
+        }
+
+        const isValidPassword = await bcrypt.compare(password, user.password_hash);
+        if (!isValidPassword) {
+        return null;
+        }
+        const { password_hash, ...userWithoutPassword } = user;
+        return userWithoutPassword;
     }
 }
