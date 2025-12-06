@@ -38,9 +38,8 @@ export const initDatabase = async () => {
 
         await pool.query(`
       CREATE TABLE IF NOT EXISTS top_gainers (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        symbol VARCHAR(10) NOT NULL,
-        company_name VARCHAR(255),
+         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        ticker VARCHAR(10) NOT NULL,
         price DECIMAL NOT NULL,
         change_amount DECIMAL NOT NULL,
         change_percentage DECIMAL NOT NULL,
@@ -52,8 +51,19 @@ export const initDatabase = async () => {
     await pool.query(`
       CREATE TABLE IF NOT EXISTS top_losers (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        symbol VARCHAR(10) NOT NULL,
-        company_name VARCHAR(255),
+        ticker VARCHAR(10) NOT NULL,
+        price DECIMAL NOT NULL,
+        change_amount DECIMAL NOT NULL,
+        change_percentage DECIMAL NOT NULL,
+        volume BIGINT NOT NULL,
+        last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS most_traded (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        ticker VARCHAR(10) NOT NULL,
         price DECIMAL NOT NULL,
         change_amount DECIMAL NOT NULL,
         change_percentage DECIMAL NOT NULL,
@@ -86,8 +96,8 @@ export const initDatabase = async () => {
     `);
 
     await pool.query(`
-      CREATE INDEX IF NOT EXISTS idx_top_gainers_symbol ON top_gainers(symbol);
-      CREATE INDEX IF NOT EXISTS idx_top_losers_symbol ON top_losers(symbol);
+      CREATE INDEX IF NOT EXISTS idx_top_gainers_symbol ON top_gainers(ticker);
+      CREATE INDEX IF NOT EXISTS idx_top_losers_symbol ON top_losers(ticker);
       CREATE INDEX IF NOT EXISTS idx_cryptocurrencies_symbol ON cryptocurrencies(symbol);
       CREATE INDEX IF NOT EXISTS idx_market_overview_type ON market_overview(data_type);
     `);

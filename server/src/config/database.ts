@@ -1,12 +1,12 @@
 import {Pool} from 'pg';
-import {config} from './environment'
+import {envConfig} from './environment'
 
 export const pool = new Pool({
-    host: config.database.host,
-    port: config.database.port,
-    database: config.database.name,
-    user: config.database.user,
-    password: config.database.password,
+    host: envConfig.database.host,
+    port: envConfig.database.port,
+    database: envConfig.database.name,
+    user: envConfig.database.user,
+    password: envConfig.database.password,
     max: 20,
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 2000
