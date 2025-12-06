@@ -11,5 +11,5 @@ export interface top_changed_response {
     last_updated: string;
     top_gainers: top_changed[];
     top_losers: top_changed[];
-    most_active: top_changed[]
+    most_active: top_changed
 }
