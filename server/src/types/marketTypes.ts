@@ -26,3 +26,30 @@ export interface market_overview {
 export interface market_overview_response {
     markets: market_overview[] 
 }
+
+export interface index_calc_response {
+    metadata: {
+        sympols: string;
+        min_dt: string;
+        max_dt: string;
+        ohlc: string;
+        interval: string
+    };
+
+    payload: {
+        RETURNS_CALCULATIONS: index_calc
+    }
+}
+
+export type sympol_obj = {
+    SPY: number;
+    QQQ: number;
+    IWM: number;
+    DIA: number
+}
+
+export interface index_calc {
+    MEAN: sympol_obj;
+    STDDEV: sympol_obj;
+    CUMULATIVE_RETURN: sympol_obj
+}
