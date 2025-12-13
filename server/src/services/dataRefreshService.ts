@@ -1,7 +1,8 @@
-import { top_changed_response } from "@/types/marketTypes";
+import { market_overview, market_overview_response, top_changed_response } from "@/types/marketTypes";
 import { alphaVintageInstance } from "../axios/alphaVintageInstance";
 import nodeCron from "node-cron";
 import { pool } from "../config/database";
+import { envConfig } from "@/config/environment";
 
 const updateTopChanges = async () => {
     try {
@@ -10,6 +11,11 @@ const updateTopChanges = async () => {
 
         pool.connect()
 
+         for (const stock of top_gainers) {
+            await pool.query(`INSERT INTO top_gainers 
+            (ticker, price, change_amount, change_percentage, volume, last_updated) VALUES
+            ($1, $2, $3, $4, $5, $6)`, [stock.ticker, stock.price, stock.change_amount, stock.change_percentage.slice(0, -2), stock.volume, last_updated])
+        }
         
         for (const stock of top_losers) {
             await pool.query(`INSERT INTO top_losers 
@@ -24,7 +30,7 @@ const updateTopChanges = async () => {
         }
         
 
-        console.log(`Database updated at ${new Date().toLocaleString()}`);
+        console.log(`top_changes updated at ${new Date().toLocaleString()}`);
     } catch (error) {
         throw error;
     }
@@ -32,4 +38,29 @@ const updateTopChanges = async () => {
     
 }
 
-export default updateTopChanges
+const updateMatketOverview = async () => {
+    try {
+        const response = await alphaVintageInstance.get(`query?function=MARKET_STATUS`)
+        const {markets: market_overview} : market_overview_response =  response.data
+
+        pool.connect()
+
+        for (const market of market_overview) {
+            console.log(market)
+            await pool.query(`INSERT INTO market_overview (
+                market_type, region, primary_exchanges, local_open,
+                local_close, current_status
+                ) VALUES ($1, $2, $3, $4, $5, $6)
+            `,[market.market_type, market.region, market.primary_exchanges,
+                market.local_open, market.local_close, market.current_status
+            ])
+        }
+
+        console.log(`market_overview updated at ${new Date().toLocaleString()}`);
+
+    } catch (error) {
+        throw error
+    }
+}
+
+export default updateMatketOverview
