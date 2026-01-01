@@ -28,8 +28,9 @@ export interface market_overview_response {
 }
 
 export interface index_calc_response {
-    metadata: {
-        sympols: string;
+    meta_data: {
+        meta_id: string;
+        symbols: string;
         min_dt: string;
         max_dt: string;
         ohlc: string;
@@ -41,7 +42,7 @@ export interface index_calc_response {
     }
 }
 
-export type sympol_obj = {
+export type symbol_obj = {
     SPY: number;
     QQQ: number;
     IWM: number;
@@ -49,7 +50,8 @@ export type sympol_obj = {
 }
 
 export interface index_calc {
-    MEAN: sympol_obj;
-    STDDEV: sympol_obj;
-    CUMULATIVE_RETURN: sympol_obj
+    MEAN: symbol_obj;
+    STDDEV: symbol_obj;
+    CUMULATIVE_RETURN: symbol_obj;
+
 }
