@@ -3,7 +3,6 @@ import cors from 'cors';
 import morgan from 'morgan';
 import { envConfig } from './config/environment';
 import { testConnection } from './config/database';
-import { initDatabase } from './scripts/initDatabase';
 import routes from './routes'
 
 const app = express();
@@ -16,7 +15,6 @@ app.use(morgan('combined'));
 
 
 app.use('/api', routes); 
-
 app.use((err: any, req: any, res: any, next: any) => {
   console.error('Error:', err);
   res.status(500).json({ 
@@ -29,11 +27,11 @@ app.use((err: any, req: any, res: any, next: any) => {
 const startServer = async () => {
   try {
     const dbConnected = await testConnection();
+
     if (!dbConnected) {
       throw new Error('Database connection failed');
     }
 
-    await initDatabase();
 
     app.listen(envConfig.port, () => {
       console.log('🚀 Stock Tracker API Server Started!');
