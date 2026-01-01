@@ -2,14 +2,19 @@ import { pool } from '../config/database';
 
 export const resetDatabase = async () => {
   try {
+    await pool.connect()
     console.log('🧹 Resetting database...');
     
     await pool.query('DROP TABLE IF EXISTS watchlists CASCADE');
     await pool.query('DROP TABLE IF EXISTS portfolios CASCADE');
     await pool.query('DROP TABLE IF EXISTS top_gainers CASCADE');
     await pool.query('DROP TABLE IF EXISTS top_losers CASCADE');
+    await pool.query('DROP TABLE IF EXISTS most_traded CASCADE');
     await pool.query('DROP TABLE IF EXISTS cryptocurrencies CASCADE');
     await pool.query('DROP TABLE IF EXISTS market_overview CASCADE');
+    await pool.query('DROP TABLE IF EXISTS etfs CASCADE');
+    await pool.query('DROP TABLE IF EXISTS market_calc CASCADE');
+    await pool.query('DROP TABLE IF EXISTS stock_metadata CASCADE');
     await pool.query('DROP TABLE IF EXISTS users CASCADE');
 
 
