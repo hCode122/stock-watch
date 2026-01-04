@@ -55,3 +55,22 @@ export interface index_calc {
     CUMULATIVE_RETURN: symbol_obj;
 
 }
+
+export interface topCoinData {
+    data: coin_resp[]
+}
+
+export interface coin_resp {
+    coin_id: string;
+    name: string;
+    symbol: string;
+    slug: string;
+    quote: {
+        USD: {
+        price: number;
+        volume_24h: number;
+        percent_change_24h: number;
+        market_cap: number;
+        };
+    };
+}
