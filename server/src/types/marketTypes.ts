@@ -56,7 +56,7 @@ export interface index_calc {
 
 }
 
-export interface topCoinData {
+export interface top_coin_data {
     data: coin_resp[]
 }
 
