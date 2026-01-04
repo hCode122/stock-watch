@@ -128,8 +128,36 @@ export const initDatabase = async () => {
             max_dt DATE,
             ohlc TEXT,
             interval VARCHAR(25)
-          )
-        `)
+          );
+        `);
+
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS coins (
+              coin_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+              coin_name VARCHAR(50) NOT NULL,
+              coin_symbol VARCHAR(50) NOT NULL,
+              slug VARCHAR(50) NOT NULL,
+              created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+              UNIQUE(coin_symbol),
+              UNIQUE(slug)
+            );
+          `);
+
+          await pool.query(`
+            CREATE TABLE IF NOT EXISTS coin_price (
+              price_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+              coin_id UUID NOT NULL REFERENCES coins(coin_id) ON DELETE CASCADE,              
+              price DECIMAL(20, 8) NOT NULL,
+              volume_24h DECIMAL(20, 2),
+              percent_change_24h VARCHAR(55),
+              market_cap DECIMAL(30, 2),
+
+              recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+              UNIQUE(coin_id, recorded_at)
+             );
+          `);
+
 
     await pool.query(`
       CREATE INDEX IF NOT EXISTS idx_top_gainers_symbol ON top_gainers(ticker);
