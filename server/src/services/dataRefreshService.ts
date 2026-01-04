@@ -1,8 +1,9 @@
-import { market_overview, market_overview_response, top_changed_response, index_calc_response, index_calc } from "@/types/marketTypes";
+import { coin_resp, topCoinData, market_overview_response, top_changed_response, index_calc_response, index_calc } from "@/types/marketTypes";
 import { alphaVintageInstance } from "../axios/alphaVintageInstance";
 import nodeCron from "node-cron";
 import { pool } from "../config/database";
 import { envConfig } from "../config/environment";
+import { coinMarketInstance } from "../axios/coinMarketInstance";
 
 const updateTopChanges = async () => {
     try {
@@ -141,4 +142,69 @@ const updateCalculations = async () => {
         }
 }
 
-export default updateCalculations
+const updateTopChangesCoins = async () => {
+    const client = await pool.connect();
+
+    try {
+        await client.query('BEGIN');
+
+        const response = await coinMarketInstance.get('listings/latest?start=1&limit=30')
+        const response_data: topCoinData = response?.data
+        let results = [];
+        for (const coin of response_data.data) {
+            const res = await pool.query(`
+                    INSERT INTO coins (coin_name, coin_symbol, slug)
+                    VALUES ($1, $2, $3) 
+                    ON CONFLICT (coin_symbol) DO NOTHING
+                    RETURNING coin_id, coin_symbol
+                `, [coin.name, coin.symbol, coin.slug])
+            results.push(...res.rows);
+
+        }
+        let coins: Map<string, number>;
+
+        if (results && results.length > 0) {
+            coins = new Map(
+                results.map(coin => [coin.coin_symbol, coin.coin_id])
+            );
+
+        } else {
+            let existingResults = [];
+            for (const coin of response_data.data) {
+                const res = await pool.query(`
+                    SELECT coin_id, coin_symbol FROM coins 
+                    WHERE coin_symbol = $1
+                `, [coin.symbol]);
+                 existingResults.push(...res.rows);
+            }
+
+            coins = new Map(
+                existingResults?.map(coin => [coin.coin_symbol, coin.coin_id])
+            );
+        }
+
+            for (const price of response_data.data) {
+                const data_in_usd = price.quote.USD
+                console.log(price.symbol)
+                console.log(coins.get(price.symbol))
+                const calc_results = await pool.query(`
+                        INSERT INTO coin_price (coin_id, price, volume_24h, percent_change_24h, market_cap)
+                        VALUES ($1, $2, $3, $4, $5)
+                        ON CONFLICT (coin_id, recorded_at)  
+                        DO UPDATE SET 
+                            price = EXCLUDED.price,
+                            volume_24h = EXCLUDED.volume_24h,
+                            percent_change_24h = EXCLUDED.percent_change_24h,
+                            market_cap = EXCLUDED.market_cap
+                    `, [coins.get(price.symbol), data_in_usd.price, data_in_usd.volume_24h, data_in_usd.percent_change_24h, data_in_usd.market_cap])
+            }
+            await client.query('COMMIT'); 
+
+            console.log("Coin Data Updated successfully!")
+        
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export default updateTopChangesCoins
