@@ -12,6 +12,7 @@
     "db:init": "ts-node src/scripts/initDatabase.ts",
     "db:reset": "ts-node src/scripts/resetDatabase.ts",
     "db:test": "ts-node src/scripts/testConnection.ts",
+    "job": "ts-node src/jobs/scheduler.ts",
     "test": "echo \"No tests yet\" && exit 0",
     "clean": "rm -rf dist",
     "type-check": "tsc --noEmit",
