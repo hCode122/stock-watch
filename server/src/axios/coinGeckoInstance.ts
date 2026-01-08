@@ -1,4 +1,4 @@
-import { envConfig } from "@/config/environment";
+import { envConfig } from "../config/environment";
 import axios from "axios";
 
 export const coinGeckoInstance = axios.create({
