@@ -158,6 +158,21 @@ export const initDatabase = async () => {
              );
           `);
 
+          await pool.query(`
+              CREATE TABLE IF NOT EXISTS coin_market_overview (
+                market_overview_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                active_cryptocurrencies BIGINT,
+                total_market_cap JSONB,
+                market_cap_percentage JSONB,
+                total_volume JSONB,
+                market_cap_change_percentage_24h_usd DECIMAL(20, 8),
+                recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  
+                recorded_date DATE GENERATED ALWAYS AS (recorded_at::DATE) STORED,
+
+                UNIQUE(recorded_date)
+              )
+            `)
+
 
     await pool.query(`
       CREATE INDEX IF NOT EXISTS idx_top_gainers_symbol ON top_gainers(ticker);
