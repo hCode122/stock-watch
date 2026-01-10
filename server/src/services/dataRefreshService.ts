@@ -6,51 +6,53 @@ import { coinMarketInstance } from "../axios/coinMarketInstance";
 import { coinGeckoInstance } from "../axios/coinGeckoInstance";
 
 const updateTopChanges = async () => {
+    const client = await pool.connect()
+
     try {
         console.log('Updating top gainer and loser stocks...')
         const response = await alphaVintageInstance.get('/query?function=TOP_GAINERS_LOSERS')
         const {last_updated, top_gainers, top_losers, most_actively_traded} : top_changed_response = response.data 
 
-        pool.connect()
 
          for (const stock of top_gainers) {
-            await pool.query(`INSERT INTO top_gainers 
-            (ticker, price, change_amount, change_percentage, volume, last_updated) VALUES
-            ($1, $2, $3, $4, $5, $6)`, [stock.ticker, stock.price, stock.change_amount, stock.change_percentage.slice(0, -2), stock.volume, last_updated])
+            await client.query(`INSERT INTO top_gainers 
+            (ticker, price, change_amount, change_percentage, volume) VALUES
+            ($1, $2, $3, $4, $5)`, [stock.ticker, stock.price, stock.change_amount, stock.change_percentage.slice(0, -2), stock.volume])
         }
         
         for (const stock of top_losers) {
-            await pool.query(`INSERT INTO top_losers 
-            (ticker, price, change_amount, change_percentage, volume, last_updated) VALUES
-            ($1, $2, $3, $4, $5, $6)`, [stock.ticker, stock.price, stock.change_amount, stock.change_percentage.slice(0, -2), stock.volume, last_updated])
+            await client.query(`INSERT INTO top_losers 
+            (ticker, price, change_amount, change_percentage, volume) VALUES
+            ($1, $2, $3, $4, $5)`, [stock.ticker, stock.price, stock.change_amount, stock.change_percentage.slice(0, -2), stock.volume])
         }
           
         for (const stock of most_actively_traded) {
-            await pool.query(`INSERT INTO most_traded 
-            (ticker, price, change_amount, change_percentage, volume, last_updated) VALUES
-            ($1, $2, $3, $4, $5, $6)`, [stock.ticker, stock.price, stock.change_amount, stock.change_percentage.slice(0, -2), stock.volume, last_updated])
+            await client.query(`INSERT INTO most_traded 
+            (ticker, price, change_amount, change_percentage, volume) VALUES
+            ($1, $2, $3, $4, $5)`, [stock.ticker, stock.price, stock.change_amount, stock.change_percentage.slice(0, -2), stock.volume])
         }
         
-
+        client.query('COMMIT')
         console.log(`top_changes updated at ${new Date().toLocaleString()}`);
     } catch (error) {
+        client.query('ROLLBACK')
         throw error;
     }
-    
-    
+    finally {
+        client.release(); 
+    }
 }
 
-const updateMatketOverview = async () => {
-    console.log('Updating market_overview stocks...')
+const updateMarketOverview = async () => {
+    console.log('Updating stock market...')
+    const client = await pool.connect()
     try {
         const response = await alphaVintageInstance.get(`/query?function=MARKET_STATUS`)
         const {markets: market_overview} : market_overview_response =  response.data
 
-        pool.connect()
 
         for (const market of market_overview) {
-            console.log(market)
-            await pool.query(`INSERT INTO market_overview (
+            await client.query(`INSERT INTO market_overview (
                 market_type, region, primary_exchanges, local_open,
                 local_close, current_status
                 ) VALUES ($1, $2, $3, $4, $5, $6)
@@ -58,16 +60,22 @@ const updateMatketOverview = async () => {
                 market.local_open, market.local_close, market.current_status
             ])
         }
+        client.query('COMMIT')
 
         console.log(`market_overview updated at ${new Date().toLocaleString()}`);
 
     } catch (error) {
+        client.query("ROLLBACK")
         throw error
     }
+     finally {
+        client.release(); 
+    }
+    
 }
 
 const updateCalculations = async () => {
-        console.log('Updating stock calculations...')
+    console.log('Updating stock calculations...')
 
     const client = await pool.connect();
     
@@ -79,13 +87,13 @@ const updateCalculations = async () => {
             
         const response: index_calc_response = axios_response.data
         const { symbols, min_dt, max_dt, ohlc, interval } = response.meta_data;
-        await pool.query(`
+        await client.query(`
             INSERT INTO stock_metadata (symbols, min_dt, max_dt, ohlc, interval)
             VALUES ($1, $2, $3, $4, $5)
         `, [Array(symbols), min_dt, max_dt, ohlc, interval])
         const symbols_arr = response.meta_data.symbols.split(',');
    
-        const results = await pool.query(`
+        const results = await client.query(`
             INSERT INTO public.etfs (symbol)
             SELECT UNNEST($1::VARCHAR(25)[])
             ON CONFLICT (symbol) DO NOTHING
@@ -100,7 +108,7 @@ const updateCalculations = async () => {
             );
         } else {
 
-            const existingResults = await pool.query(`
+            const existingResults = await client.query(`
                 SELECT etf_id, symbol FROM etfs 
                 WHERE symbol = ANY($1::VARCHAR(25)[])
             `, [symbols_arr]);
@@ -122,24 +130,29 @@ const updateCalculations = async () => {
                     if (etfId && value !== undefined) {
                                            
 
-                        await pool.query(`
+                        await client.query(`
                             INSERT INTO market_calc (calculation, value, etf_id)
                             VALUES ($1, $2, $3)
-                            ON CONFLICT (etf_id, calculation) 
-                            DO UPDATE SET value = EXCLUDED.value
+                            ON CONFLICT (etf_id, calculation, date) 
+                            DO UPDATE SET value = EXCLUDED.value,
+                            recorded_at = EXCLUDED.recorded_at
                         `, [calcType, value, etfId]);
                     }
                 }   
             }
 
             await client.query('COMMIT'); 
-            console.log('Successfully updated calculations');
+            console.log(`Successfully updated calculations at ${new Date().toLocaleString()}`);
 
         } catch (error) {
              await client.query('ROLLBACK'); 
             console.error('====================== Failed to update calculations: ======================', error);
             throw error;
         }
+         finally {
+        client.release(); 
+        }
+    
 }
 
 const updateTopChangesCoins = async () => {
@@ -148,11 +161,11 @@ const updateTopChangesCoins = async () => {
     try {
         await client.query('BEGIN');
 
-        const response = await coinMarketInstance.get('listings/latest?start=1&limit=30')
+        const response = await coinMarketInstance.get('v1/cryptocurrency/listings/latest?start=1&limit=30')
         const response_data: top_coin_data = response?.data
         let results = [];
         for (const coin of response_data.data) {
-            const res = await pool.query(`
+            const res = await client.query(`
                     INSERT INTO coins (coin_name, coin_symbol, slug)
                     VALUES ($1, $2, $3) 
                     ON CONFLICT (coin_symbol) DO NOTHING
@@ -171,7 +184,7 @@ const updateTopChangesCoins = async () => {
         } else {
             let existingResults = [];
             for (const coin of response_data.data) {
-                const res = await pool.query(`
+                const res = await client.query(`
                     SELECT coin_id, coin_symbol FROM coins 
                     WHERE coin_symbol = $1
                 `, [coin.symbol]);
@@ -186,10 +199,10 @@ const updateTopChangesCoins = async () => {
             for (const price of response_data.data) {
                 const data_in_usd = price.quote.USD
  
-                const calc_results = await pool.query(`
-                        INSERT INTO coin_price (date, coin_id, price, volume_24h, percent_change_24h, market_cap)
+                const calc_results = await client.query(`
+                        INSERT INTO coin_price (coin_id, price, volume_24h, percent_change_24h, market_cap)
                         VALUES ($1, $2, $3, $4, $5)
-                        ON CONFLICT (coin_id)  
+                        ON CONFLICT (coin_id, date)  
                         DO UPDATE SET 
                             price = EXCLUDED.price,
                             volume_24h = EXCLUDED.volume_24h,
@@ -199,13 +212,17 @@ const updateTopChangesCoins = async () => {
             }
             await client.query('COMMIT'); 
 
-            console.log("Coin Data Updated successfully!")
+            console.log(`Coin Data Updated successfully at ${new Date().toLocaleString()}`)
         
     } catch (error) {
         await client.query('ROLLBACK')
         console.error('====================== Failed to update latest coins: ======================', error);
         throw error;
     }
+     finally {
+        client.release(); 
+    }
+    
 }
 
 const updateCoinMarketOverview = async () => {
@@ -215,29 +232,40 @@ const updateCoinMarketOverview = async () => {
     try {
         const results = await coinGeckoInstance.get('/v3/global')
         const result_data: coin_overview = results.data.data
-        console.log(result_data)
-        await pool.query(`
+        await client.query(`
             INSERT INTO coin_market_overview (active_cryptocurrencies, total_market_cap,
             market_cap_percentage, total_volume, market_cap_change_percentage_24h_usd)
             VALUES ($1, $2, $3, $4, $5)
+            ON CONFLICT (date) 
+            DO UPDATE SET
+                active_cryptocurrencies = EXCLUDED.active_cryptocurrencies,
+                total_market_cap = EXCLUDED.total_market_cap,
+                market_cap_percentage = EXCLUDED.market_cap_percentage,
+                total_volume = EXCLUDED.total_volume,
+                market_cap_change_percentage_24h_usd = EXCLUDED.market_cap_change_percentage_24h_usd,
+                recorded_at = EXCLUDED.recorded_at
         `, [result_data.active_cryptocurrencies, result_data.total_market_cap, result_data.market_cap_percentage
             , result_data.total_volume, result_data.market_cap_change_percentage_24h_usd
         ])
 
         await client.query('COMMIT')
-        console.log("Coin market overview data updated successfully")
+        console.log(`Coin market overview data updated at ${new Date().toLocaleString()}`)
     } catch (error) {
         await client.query('ROLLBACK')
         console.error('====================== Failed to update coin market overview: ======================', error);
         throw error;
     }
+     finally {
+        client.release(); 
+    }
+    
 } 
 
 
 export {
   updateCalculations,
   updateCoinMarketOverview,
-  updateMatketOverview,
+  updateMarketOverview,
   updateTopChanges,    
   updateTopChangesCoins
 };
