@@ -1,15 +1,25 @@
 import nodeCron from "node-cron";
 import {
     updateCalculations, updateCoinMarketOverview, 
-    updateMatketOverview, updateTopChanges, updateTopChangesCoins
+    updateMarketOverview, updateTopChanges, updateTopChangesCoins
 } from "../services/dataRefreshService"
 
-nodeCron.schedule('05 21 * * *', async () => {
-    console.log('Daily scheduled database update started:')
+nodeCron.schedule('26 11 * * *', async () => {
     await updateTopChanges();
-    await updateMatketOverview();
-    await updateCalculations();
-    await updateCoinMarketOverview();
-    await updateTopChangesCoins();
+});
 
-})
+nodeCron.schedule('27 11 * * *', async () => { 
+    await updateMarketOverview();
+});
+
+nodeCron.schedule('28 11 * * *', async () => { 
+    await updateCalculations();
+});
+
+nodeCron.schedule('29 11 * * *', async () => { 
+    await updateCoinMarketOverview();
+});
+
+nodeCron.schedule('30 11 * * *', async () => { 
+    await updateTopChangesCoins();
+});
