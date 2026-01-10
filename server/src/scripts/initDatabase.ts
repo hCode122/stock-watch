@@ -46,7 +46,8 @@ export const initDatabase = async () => {
         change_amount DECIMAL NOT NULL,
         change_percentage DECIMAL NOT NULL,
         volume BIGINT NOT NULL,
-        last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+          recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+              date DATE GENERATED ALWAYS AS (recorded_at::DATE) STORED
       );
     `);
 
@@ -58,7 +59,8 @@ export const initDatabase = async () => {
         change_amount DECIMAL NOT NULL,
         change_percentage DECIMAL NOT NULL,
         volume BIGINT NOT NULL,
-        last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+          recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+              date DATE GENERATED ALWAYS AS (recorded_at::DATE) STORED
       );
     `);
 
@@ -70,7 +72,8 @@ export const initDatabase = async () => {
         change_amount DECIMAL NOT NULL,
         change_percentage DECIMAL NOT NULL,
         volume BIGINT NOT NULL,
-        last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+          recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+              date DATE GENERATED ALWAYS AS (recorded_at::DATE) STORED
       );
     `);
 
@@ -83,8 +86,8 @@ export const initDatabase = async () => {
         current_price DECIMAL NOT NULL,
         price_change_percentage_24h DECIMAL,
         market_cap DECIMAL,
-        volume_24h DECIMAL,
-        last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        volume_24h DECIMAL
+      
       );
     `);
 
@@ -96,7 +99,9 @@ export const initDatabase = async () => {
         primary_exchanges VARCHAR(100) NOT NULL,
         local_open VARCHAR(25) NOT NULL,
         local_close VARCHAR(25) NOT NULL,
-        current_status VARCHAR(25) NOT NULL
+        current_status VARCHAR(25) NOT NULL,
+          recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+              date DATE GENERATED ALWAYS AS (recorded_at::DATE) STORED
       );
     `);
 
@@ -114,7 +119,9 @@ export const initDatabase = async () => {
             value DOUBLE PRECISION NOT NULL,
             etf_id INTEGER REFERENCES etfs(etf_id) ON DELETE CASCADE,
 
-            UNIQUE(etf_id, calculation)
+            recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+            date DATE GENERATED ALWAYS AS (recorded_at::DATE) STORED,
+            UNIQUE(etf_id, calculation, date)
             );
       `);
 
@@ -127,7 +134,9 @@ export const initDatabase = async () => {
             min_dt DATE,
             max_dt DATE,
             ohlc TEXT,
-            interval VARCHAR(25)
+            interval VARCHAR(25),
+            recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+            date DATE GENERATED ALWAYS AS (recorded_at::DATE) STORED
           );
         `);
 
@@ -137,7 +146,8 @@ export const initDatabase = async () => {
               coin_name VARCHAR(50) NOT NULL,
               coin_symbol VARCHAR(50) NOT NULL,
               slug VARCHAR(50) NOT NULL,
-              created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+              recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+              date DATE GENERATED ALWAYS AS (recorded_at::DATE) STORED,
 
               UNIQUE(coin_symbol),
               UNIQUE(slug)
@@ -150,11 +160,12 @@ export const initDatabase = async () => {
               coin_id UUID NOT NULL REFERENCES coins(coin_id) ON DELETE CASCADE,              
               price DECIMAL(20, 8) NOT NULL,
               volume_24h DECIMAL(20, 2),
-              percent_change_24h VARCHAR(55),
+              percent_change_24h DECIMAL(20, 2),
               market_cap DECIMAL(30, 2),
 
               recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-              UNIQUE(coin_id, recorded_at)
+              date DATE GENERATED ALWAYS AS (recorded_at::DATE) STORED,
+              UNIQUE(coin_id, date)
              );
           `);
 
@@ -167,9 +178,9 @@ export const initDatabase = async () => {
                 total_volume JSONB,
                 market_cap_change_percentage_24h_usd DECIMAL(20, 8),
                 recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  
-                recorded_date DATE GENERATED ALWAYS AS (recorded_at::DATE) STORED,
+                date DATE GENERATED ALWAYS AS (recorded_at::DATE) STORED,
 
-                UNIQUE(recorded_date)
+                UNIQUE(date)
               )
             `)
 
