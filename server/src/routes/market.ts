@@ -4,5 +4,6 @@ import { getStockMarketOV, getStockCalcData, getLatestCoinsData } from "../contr
 const router = Router();
 router.use('/marketStock', getStockMarketOV);
 router.use('/stockCalc', getStockCalcData);
+router.use('/coinsLatest', getLatestCoinsData);
 
 export default router;
