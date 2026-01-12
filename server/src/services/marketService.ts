@@ -82,3 +82,20 @@ export const getStockCalculations = async () => {
         throw error
     }
 }
+
+export const getLatestCoins = async () => {
+    try {
+        const data = await pool.query(`
+                SELECT c.coin_id, coin_name, coin_symbol, slug, c.date,
+                price, volume_24h, percent_change_24h, market_cap
+                FROM coins c inner join coin_price p
+                on c.coin_id = p.coin_id
+                WHERE p.date = (SELECT max(date) FROM coin_price)
+                ORDER BY p.market_cap DESC;
+            `)
+        return data.rows
+    } catch (error) {
+        console.log(error)
+        throw error
+    }
+}
