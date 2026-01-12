@@ -17,3 +17,18 @@ export const getTopStocks = async (req: Request, res: Response) => {
     }
 }
 
+export const getStockMarketOV = async (req: Request ,res: Response) => {
+    try {
+        const data = await getStockMarketData()
+        res.status(200).json({
+            success: true,
+            data: data
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: 'Failed to fetch market overview',
+            message: error
+        })
+    }
+}
