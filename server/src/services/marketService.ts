@@ -43,7 +43,6 @@ export const getTopStockData = async () => {
         return [gainer.rows, loser.rows, traded.rows]
     } catch (error) {
         console.log(error)
-        throw error
     }
 }
 
@@ -64,7 +63,6 @@ export const getStockMarketData = async () => {
         return data.rows;
     } catch (error) {
         console.log(error)
-        throw error
     }
 }
 
@@ -79,7 +77,6 @@ export const getStockCalculations = async () => {
         return data.rows
     } catch (error) {
         console.log(error)
-        throw error
     }
 }
 
@@ -96,6 +93,19 @@ export const getLatestCoins = async () => {
         return data.rows
     } catch (error) {
         console.log(error)
-        throw error
+    }
+}
+
+export const getCoinMarketData = async () => {
+    try {
+        const data = await pool.query(`
+            SELECT market_overview_id, active_cryptocurrencies, total_market_cap
+            market_cap_percentage, total_volume, market_cap_change_percentage_24h_usd, date::TEXT
+            FROM coin_market_overview WHERE
+            date = (SELECT MAX(date) FROM coin_market_overview)
+        `)
+        return data.rows;
+    } catch (error) {
+        console.log(error)
     }
 }
