@@ -43,6 +43,7 @@ export const getTopStockData = async () => {
         return [gainer.rows, loser.rows, traded.rows]
     } catch (error) {
         console.log(error)
+        throw error
     }
 }
 
@@ -63,5 +64,21 @@ export const getStockMarketData = async () => {
         return data.rows;
     } catch (error) {
         console.log(error)
+        throw error
+    }
+}
+
+export const getStockCalculations = async () => {
+    try {
+        const data = await pool.query(`
+                SELECT e.etf_id, symbol, calculation, value, date::TEXT FROM market_calc c
+                INNER JOIN etfs e on e.etf_id = c.etf_id WHERE
+                date = (SELECT max(date) FROM market_calc)
+                ORDER BY symbol asc
+            `)
+        return data.rows
+    } catch (error) {
+        console.log(error)
+        throw error
     }
 }
