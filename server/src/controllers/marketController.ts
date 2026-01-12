@@ -45,3 +45,18 @@ export const getStockCalcData = async (req: Request ,res: Response) => {
         })
     }
 }
+
+export const getLatestCoinsData = async (req: Request ,res: Response) => {
+    try {
+        const data = await getLatestCoins()
+        res.status(200).json({
+            success: true,
+            data: data
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: 'Failed to fetch cryptocurrencies',
+        })
+    }
+}
