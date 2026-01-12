@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import authRoutes from './auth';
-
-import updateTopChanges from '../services/dataRefreshService';
+import marketRoutes from "./market"
+import { getTopStocks } from '../controllers/marketController';
 
 const router = Router();
 router.use('/auth', authRoutes);
-router.use('/test', updateTopChanges)
+router.use('/market', marketRoutes)
 export default router;
