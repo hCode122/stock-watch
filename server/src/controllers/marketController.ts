@@ -1,4 +1,4 @@
-import { getLatestCoins, getStockCalculations, getStockMarketData, getTopStockData } from "../services/marketService";
+import { getCoinMarketData, getLatestCoins, getStockCalculations, getStockMarketData, getTopStockData } from "../services/marketService";
 import { Request, Response } from 'express';
 
 export const getTopStocks = async (req: Request, res: Response) => {
@@ -57,6 +57,21 @@ export const getLatestCoinsData = async (req: Request ,res: Response) => {
         res.status(500).json({
             success: false,
             error: 'Failed to fetch cryptocurrencies',
+        })
+    }
+}
+
+export const getCoinMarketOVData = async (req: Request, res: Response) => {
+    try {
+        const data = await getCoinMarketData()
+        res.status(200).json({
+            success: true,
+            data: data
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: 'Failed to fetch crypto market data',
         })
     }
 }
