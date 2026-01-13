@@ -18,6 +18,7 @@ export const resetDatabase = async () => {
     await pool.query('DROP TABLE IF EXISTS users CASCADE');
     await pool.query('DROP TABLE IF EXISTS coins CASCADE');
     await pool.query('DROP TABLE IF EXISTS coin_price CASCADE');
+    await pool.query('DROP TABLE IF EXISTS coin_market_overview CASCADE');
 
 
 
