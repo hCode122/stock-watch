@@ -11,10 +11,10 @@ export const NavBar = () => {
     ]
 
     return (
-        <div className="flex flex-1 justify-start gap-16 min-h-[4rem] ml-16 mr-16 p-2">
+        <div className="flex flex-1 justify-start gap-16 min-h-[4rem] p-2">
             {
-                navLinkList.map(link => (
-                    <NavLink navProbs={link} />
+                navLinkList.map((link, index) => (
+                    <NavLink key={index} navProbs={link} />
                 ))
             }
         </div>
