@@ -3,10 +3,12 @@ import { Request, Response } from 'express';
 
 export const getTopStocks = async (req: Request, res: Response) => {
     try {
-        const data = await getTopStockData()
+        const {topGainers, topLosers, mostTraded} = await getTopStockData()
+
         res.json({
             success: true,
-            data: data
+            data:{topGainers, topLosers, mostTraded}
+
         })
     } catch (error) {
         res.status(500).json({
