@@ -13,6 +13,7 @@ export const getTopStockData = async () => {
             FROM top_gainers 
             WHERE date = (SELECT MAX(date) FROM top_gainers)
             ORDER BY change_percentage DESC
+            LIMIT 10
         `);
 
         const loser = await pool.query(`
@@ -26,6 +27,7 @@ export const getTopStockData = async () => {
             FROM top_losers
             WHERE date = (SELECT MAX(date) FROM top_losers)
             ORDER BY change_percentage ASC
+            LIMIT 10
         `)
 
         const traded = await pool.query(`
@@ -37,12 +39,14 @@ export const getTopStockData = async () => {
             volume,
             date::TEXT as date
             FROM most_traded
-            WHERE date = (SELECT MAX(date) FROM top_losers)
-            ORDER BY change_percentage ASC
+            WHERE date = (SELECT MAX(date) FROM most_traded)
+            ORDER BY volume DESC
+            LIMIT 10
         `)
-        return [gainer.rows, loser.rows, traded.rows]
+        return {topGainers: gainer.rows, topLosers: loser.rows, mostTraded: traded.rows}
     } catch (error) {
         console.log(error)
+        throw error; 
     }
 }
 
@@ -59,10 +63,12 @@ export const getStockMarketData = async () => {
             date::TEXT
             FROM market_overview
             WHERE date = (SELECT MAX(date) from market_overview)
+            LIMIT 10
         `)
         return data.rows;
     } catch (error) {
         console.log(error)
+        throw error; 
     }
 }
 
@@ -73,10 +79,12 @@ export const getStockCalculations = async () => {
                 INNER JOIN etfs e on e.etf_id = c.etf_id WHERE
                 date = (SELECT max(date) FROM market_calc)
                 ORDER BY symbol asc
+                LIMIT 10
             `)
         return data.rows
     } catch (error) {
         console.log(error)
+        throw error; 
     }
 }
 
@@ -88,11 +96,13 @@ export const getLatestCoins = async () => {
                 FROM coins c inner join coin_price p
                 on c.coin_id = p.coin_id
                 WHERE p.date = (SELECT max(date) FROM coin_price)
-                ORDER BY p.market_cap DESC;
+                ORDER BY p.market_cap DESC
+                LIMIT 10
             `)
         return data.rows
     } catch (error) {
         console.log(error)
+        throw error; 
     }
 }
 
@@ -103,9 +113,11 @@ export const getCoinMarketData = async () => {
             market_cap_percentage, total_volume, market_cap_change_percentage_24h_usd, date::TEXT
             FROM coin_market_overview WHERE
             date = (SELECT MAX(date) FROM coin_market_overview)
+            LIMIT 10
         `)
         return data.rows;
     } catch (error) {
         console.log(error)
+        throw error; 
     }
 }
