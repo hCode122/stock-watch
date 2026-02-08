@@ -102,11 +102,7 @@ const updateCalculations = async () => {
 
         let etfs: Map<string, number>;
 
-        if (results.rows.length > 0) {
-            etfs = new Map(
-                results.rows.map(etf => [etf.symbol, etf.etf_id])
-            );
-        } else {
+      
 
             const existingResults = await client.query(`
                 SELECT etf_id, symbol FROM etfs 
@@ -116,7 +112,7 @@ const updateCalculations = async () => {
             etfs = new Map(
                 existingResults.rows.map(etf => [etf.symbol, etf.etf_id])
             );
-        }
+        
 
         const calculation_names = Object.keys(response.payload.RETURNS_CALCULATIONS) as Array<keyof index_calc>;
         const calculationObj = response.payload.RETURNS_CALCULATIONS
@@ -171,17 +167,14 @@ const updateTopChangesCoins = async () => {
                     ON CONFLICT (coin_symbol) DO NOTHING
                     RETURNING coin_id, coin_symbol
                 `, [coin.name, coin.symbol, coin.slug])
+
+
             results.push(...res.rows);
 
         }
         let coins: Map<string, number>;
 
-        if (results && results.length > 0) {
-            coins = new Map(
-                results.map(coin => [coin.coin_symbol, coin.coin_id])
-            );
-
-        } else {
+      
             let existingResults = [];
             for (const coin of response_data.data) {
                 const res = await client.query(`
@@ -194,11 +187,15 @@ const updateTopChangesCoins = async () => {
             coins = new Map(
                 existingResults?.map(coin => [coin.coin_symbol, coin.coin_id])
             );
-        }
+        
             const today = new Date().toISOString().split('T')[0];
             for (const price of response_data.data) {
                 const data_in_usd = price.quote.USD
- 
+                        const coinId = coins.get(price.symbol);
+    console.log(`Symbol: ${price.symbol}, Found ID: ${coinId}`);
+    if (!coinId) {
+        console.error(`❌ MISSING: ${price.symbol} not found in coins table!`);
+    }
                 const calc_results = await client.query(`
                         INSERT INTO coin_price (coin_id, price, volume_24h, percent_change_24h, market_cap)
                         VALUES ($1, $2, $3, $4, $5)
