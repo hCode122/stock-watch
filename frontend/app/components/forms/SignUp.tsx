@@ -8,7 +8,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { Eye, EyeClosed } from 'lucide-react';
-
+import { useSignUp } from '@/hooks/useSignUp';
+import { toast } from 'sonner';
 const formSchema = z.object({
         username: z.string().min(3, "Username must be at least 3 characters"),
         email: z.string().email("Doesn't match a valid email format"),
@@ -53,8 +54,16 @@ const SignUpForm = () => {
     const isStage2Valid = watchPw?.length >= 8 &&  
           watchConf == watchPw; 
 
-    function onSubmit(data: formSchemaType) {
-        console.log("Final form data:", data)
+    async function onSubmit(data: formSchemaType) {
+        const resp = await useSignUp(data)
+         if (resp.success) {
+            console.log('Signup successful:', resp.data);
+            toast.success("Account created successfully! Please log in.");
+            // router.push('/login');
+        } else {
+            console.log('Signup failed:', resp.error);
+            toast.error(resp.error || "Signup failed. Please try again.");
+        }
     }
 
     const handleNext = async () => {
@@ -89,29 +98,6 @@ const SignUpForm = () => {
             {stage === 2 && (
                 <>
                     <StageTwo form={form} />
-                    
-                    {/*<Controller 
-                        name="rememberMe"
-                        control={form.control}
-                        render={({field, fieldState}) => (
-                            <Field orientation="horizontal" className="mt-4">
-                                <Checkbox 
-                                    id="rememberBox" 
-                                    checked={field.value} 
-                                    onCheckedChange={field.onChange}  
-                                    onBlur={field.onBlur}
-                                    ref={field.ref}
-                                    name={field.name} 
-                                    className="focus:ring-2 focus:ring-blue-500 ring-white checked:ring-red-200"
-                                />
-                                <FieldContent>
-                                    <FieldLabel className='text-[0.8rem]' htmlFor="rememberBox">
-                                        Remember Me
-                                    </FieldLabel>
-                                </FieldContent>
-                            </Field>
-                        )}
-                    />*/}
                     
                     <Field className='mt-8 flex gap-2'>
                         <Button 
