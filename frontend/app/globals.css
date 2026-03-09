@@ -115,6 +115,8 @@
   --sidebar-accent-foreground: oklch(0.985 0.001 106.423);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.553 0.013 58.071);
+
+
 }
 
 @layer base {
@@ -123,5 +125,59 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+    ::selection {
+    background-color: #3b82f6 !important; 
+    color: white !important;
+  }
+  
+  ::-moz-selection {
+    background-color: #3b82f6 !important;
+    color: white !important;
+  }
+
+
+  .dark ::selection {
+    background-color: #60a5fa;
+    color: #030712; 
+  }
+  
+  .dark ::-moz-selection {
+    background-color: #60a5fa;
+    color: #030712;
+  }
+}
+
+@layer animation {
+  @keyframes slide-in-stage-1 {
+    0% {
+      transform: translateX(-500px);
+    }
+    50% {
+    }
+    90% {
+      transform: translateX(0px);
+
+    }
+  }
+
+  @keyframes slide-in-stage-2 {
+    0% {
+      transform: translateX(+500px);
+    }
+    50% {
+    }
+    90% {
+      transform: translateX(0px);
+
+    }
+  }
+
+  .animation-form-stage1 {
+    animation: 0.5s slide-in-stage-1;  
+  }
+
+  .animation-form-stage2 {
+    animation: 0.5s slide-in-stage-2;  
   }
 }
