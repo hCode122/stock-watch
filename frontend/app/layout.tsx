@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Roboto } from "next/font/google";
 import "./globals.css";
 import { ReduxProvider } from "./ReduxProvider";
+import { Toaster } from "@/components/ui/sonner"
 
 const roboto = Roboto({
   weight: ['300', '400', '500', '700'], 
@@ -29,6 +30,7 @@ export default function RootLayout({
       <ReduxProvider>
                 {children}
       </ReduxProvider>
+      <Toaster />
       </body>
     </html>
   );
