@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 
 export const userService = {
     async createUser(userdata : SignupData): Promise<Omit<User, 'password_hash'>> {
-        const {email, firstname, lastname, password} = userdata;
+        const {email, username, password} = userdata;
 
         const exists = await this.findByEmail(email);
         if(exists) {
@@ -14,9 +14,9 @@ export const userService = {
         const hashed_password = await bcrypt.hash(password, 12);
 
         const result = await pool.query(`
-            INSERT INTO users (email, firstname, lastname, password) VALUES
-            ($1, $2, $3, $4) RETURNING id, email, firstname, lastname, created_at
-        `, [email, firstname, lastname, hashed_password])
+            INSERT INTO users (email, username, password_hash) VALUES
+            ($1, $2, $3) RETURNING id, email, username, balance
+        `, [email, username, hashed_password])
 
         return result.rows[0]
     },

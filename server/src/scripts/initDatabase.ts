@@ -6,14 +6,15 @@ export const initDatabase = async () => {
 
         await pool.query(`
             CREATE TABLE IF NOT EXISTS users (
-                id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-                email VARCHAR(255) UNIQUE NOT NULL,
-                password_hash VARCHAR(255) NOT NULL,
-                firstname VARCHAR(100) NOT NULL,
-                lastname VARCHAR(100) NOT NULL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );    
+              id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+              email VARCHAR(255) UNIQUE NOT NULL,
+              username VARCHAR(255) UNIQUE NOT NULL,
+              password_hash VARCHAR(255) NOT NULL,
+              balance DECIMAL(12,2) NOT NULL DEFAULT 10000.00,
+              created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+              updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+              CONSTRAINT positive_balance CHECK (balance >= 0)
+          );
         `);
 
         await pool.query(`
@@ -28,15 +29,7 @@ export const initDatabase = async () => {
             );
         `);
 
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS watchlists (
-                id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-                user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-                stock_symbol VARCHAR(25) NOT NULL,
-                added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                UNIQUE(user_id, stock_symbol)
-            );
-        `);
+      
 
         await pool.query(`
       CREATE TABLE IF NOT EXISTS top_gainers (
