@@ -5,7 +5,7 @@ export const NavBar = () => {
     const navLinkList = [
         {text: "Dashboard", target:"/dashboard"},
         {text: "Market", target:"/market"},
-        {text: "My Portfolio", target:"/portfolio"},
+        {text: "Dashboard", target:"/dashboard"},
         {text: "Watchlist", target:"/watchlist"},
         {text: "Settings", target:"/settings"}
     ]
