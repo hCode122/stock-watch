@@ -3,6 +3,7 @@ import { Card, CardContent, CardTitle } from "@/components/ui/card"
 import { Table, TableHead, TableRow, TableCell, TableBody, TableHeader } from "@/components/ui/table"
 import { Spinner } from "@/components/ui/spinner"
 import Image from "next/image"
+import { PlusCircle } from "lucide-react"
 
 interface CoinProps {
     coinData: LatestCoin[] | null,
@@ -76,7 +77,11 @@ const LatestCoinsCard = ({coinData, coinLoading, coinError} : CoinProps) => {
                                                 
                                             </TableCell>
                                         ))
+                                        
                                     }
+                                     <TableCell className="pl-2 hover:scale-[1.2] transition duration-200">
+                                        <PlusCircle className="cursor-pointer text-green-400" />
+                                    </TableCell>
                                 </TableRow>
                             ))
                         }

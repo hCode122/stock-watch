@@ -13,16 +13,24 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { PiggyBank, PlusCircle } from "lucide-react"
+import { Dispatch, SetStateAction } from "react"
+
+interface stockBuyData {
+    ticker: string,
+    price: number
+}
 
 interface CardProps {
     data: TopStockItem[] | undefined,
     type: string,
     loading: boolean,
-    error: string | null
+    error: string | null,
+    setBuy: Dispatch<SetStateAction<stockBuyData | null>>
 }
 
-export const StockChangeCard = ( {data, type, loading, error} : CardProps) => {
-    const colNames = ['', 'Stock', 'Price', 'Change amt', 'Change perc', 'Volume']
+export const StockChangeCard = ( {data, type, loading, error, setBuy} : CardProps) => {
+    const colNames = ['', 'Stock', 'Price', 'Change amt', 'Change perc', 'Volume', '']
     if (loading) {
         return (
             <Card className="shadow-md flex-1 flex items-center min-h-[21rem] bg-card mt-8">
@@ -101,9 +109,13 @@ export const StockChangeCard = ( {data, type, loading, error} : CardProps) => {
                                             </TableCell>
                                         ))
                                     }
+                                    <TableCell className="pl-4 hover:scale-[1.2] transition duration-200">
+                                        <PlusCircle onClick={() => setBuy({ticker:rowData.ticker, price: rowData.price})} className="cursor-pointer text-green-400" />
+                                    </TableCell>
                                 </TableRow>
                             ))
                         }
+
                     </TableBody>
                 </Table>       
             </CardContent>
