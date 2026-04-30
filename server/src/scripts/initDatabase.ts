@@ -240,8 +240,8 @@ export const initDatabase = async () => {
     throw error;
   } 
 };
-if (require.main === module) {
+if (process.env.NODE_ENV !== 'production') {
   initDatabase()
-    .then(() => process.exit(0))
-    .catch(() => process.exit(1));
+    .then(() => console.log('Database initialization complete'))
+    .catch((error) => console.error('Database initialization failed:', error));
 }
