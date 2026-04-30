@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon src/index.ts",
     "dev:debug": "nodemon --inspect src/index.ts",
-    "build": "tsc",
+    "build": "tsc --skipLibCheck",
     "start": "node dist/index.js",
     "start:dev": "ts-node src/index.ts",
     "db:init": "ts-node src/scripts/initDatabase.ts",

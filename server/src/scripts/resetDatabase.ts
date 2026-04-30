@@ -1,3 +1,4 @@
+import process from 'process';
 import { pool } from '../config/database';
 
 export const resetDatabase = async () => {

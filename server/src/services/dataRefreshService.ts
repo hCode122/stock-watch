@@ -1,7 +1,6 @@
 import { coin_resp, top_coin_data, market_overview_response, top_changed_response, index_calc_response, index_calc, coin_overview } from "../types/marketTypes";
 import { alphaVintageInstance } from "../axios/alphaVintageInstance";
 import { pool } from "../config/database";
-import { envConfig } from "../config/environment";
 import { coinMarketInstance } from "../axios/coinMarketInstance";
 import { coinGeckoInstance } from "../axios/coinGeckoInstance";
 
@@ -110,7 +109,7 @@ const updateCalculations = async () => {
             `, [symbols_arr]);
             
             etfs = new Map(
-                existingResults.rows.map(etf => [etf.symbol, etf.etf_id])
+                existingResults.rows.map((etf: any) => [etf.symbol, etf.etf_id])
             );
         
 
