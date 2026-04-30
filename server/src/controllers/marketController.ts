@@ -2,7 +2,7 @@ import { getCoinMarketData, getLatestCoins, getStockCalculations, getStockMarket
 import { Request, Response } from 'express';
 import { Purchase } from '../services/transactionService';
 import { getErrorMessage } from "../utils/getErrorMessage";
-import { AuthRequest } from "@/middleware/auth";
+import { AuthRequest } from "../middleware/auth";
 
 export const getTopStocks = async (req: Request, res: Response) => {
     try {
