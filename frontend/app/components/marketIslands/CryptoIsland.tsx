@@ -33,12 +33,19 @@ const CryptoIsland = () => {
         <div id="stock" className="flex-col w-full gap-4 mt-14">
             <h2 className="text-lg font-[700]">Crypto Market</h2>
               {
-                buy != null ? <BuyDialog setBuy={setBuy} purchase_type="coin" stock={buy}/> : null
+                buy != null ? <BuyDialog buy={buy} setBuy={setBuy} assetType="CRYPTO" stock={buy}/> : null
             }
-            <div className="flex max-w-full flex-col lg:flex-row justify-evenly gap-4">
+            <div className="flex max-w-full flex-col justify-evenly gap-4 overflow-x-auto">
+                <div className="min-w-0 flex-0">
                     <LatestCoinsCard setBuy={setBuy} coinData={coinData} coinError={coinError} coinLoading={coinLoading} />
-                    <CoinMarketOvCard coinMarketData={coinMarketData} coinMarketLoading={coinMarketLoading}
-                    coinMarketError={coinMarketError} />
+                </div>
+                <div className="min-w-0 flex-1">
+                    <CoinMarketOvCard 
+                        coinMarketData={coinMarketData} 
+                        coinMarketLoading={coinMarketLoading}
+                        coinMarketError={coinMarketError} 
+                    />
+                </div>
             </div>
             <div className="flex justify-center">
             <Button onClick={() => scrollToSection('stock')} className="mx-auto mt-14 py-8 w-42 bg-special"> Back to top <ArrowBigUp className="h-16" /></Button>

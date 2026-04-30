@@ -59,5 +59,5 @@ export interface CoinMarketData {
     market_cap_percentage: {[key: string] : number} ,
     total_volume: number,
     market_cap_change_percentage_24h_usd: number ,
-    percArr: Array<{[key: string]: number}>
+    percArr: Array<{coin: string, change24h: number}>
 }

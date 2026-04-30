@@ -30,13 +30,13 @@ const StockIsland = () => {
         <div id="stock" className="flex-col w-full mt-12 gap-4 ">
             <h2 className="text-lg font-[700]">Stock Market</h2>
             {
-                buy != null ? <BuyDialog setBuy={setBuy} purchase_type="stock" stock={buy}/> : null
+                buy != null ? <BuyDialog buy={buy} setBuy={setBuy} assetType="STOCK" stock={buy}/> : null
             }
             <div className="flex max-w-full flex-col lg:flex-row justify-evenly gap-4">
                 <StockChangeCard setBuy={setBuy} data={topStockData?.topGainers} type='gainer' loading={loading} error={error} />
                 <StockChangeCard setBuy={setBuy} data={topStockData?.topLosers} type='looser' loading={loading} error={error}  />
             </div>
-            <div className="lg:grid lg:grid-cols-7 gap-4">
+            <div className="flex max-w-full flex-col  gap-4">
                 <StockMarketOvCard data={stockMarketOV} loading={marketLoading} error={marketError} />
                 <StockCalcCard calcData={calcData} calcLoading={calcLoading} calcError={calcError} />
             </div>
