@@ -19,8 +19,8 @@ export const resetDatabase = async () => {
     await pool.query('DROP TABLE IF EXISTS coins CASCADE');
     await pool.query('DROP TABLE IF EXISTS coin_price CASCADE');
     await pool.query('DROP TABLE IF EXISTS coin_market_overview CASCADE');
-
-
+    await pool.query('DROP TABLE IF EXISTS transactions CASCADE');
+    await pool.query('DROP TABLE IF EXISTS holdings CASCADE');
 
     console.log('Database tables dropped successfully');
     

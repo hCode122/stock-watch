@@ -10,7 +10,7 @@ export const initDatabase = async () => {
               email VARCHAR(255) UNIQUE NOT NULL,
               username VARCHAR(255) UNIQUE NOT NULL,
               password_hash VARCHAR(255) NOT NULL,
-              balance DECIMAL(12,2) NOT NULL DEFAULT 10000.00,
+              balance DECIMAL(12,2) NOT NULL DEFAULT 1000.00,
               created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
               updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
               CONSTRAINT positive_balance CHECK (balance >= 0)
@@ -18,18 +18,69 @@ export const initDatabase = async () => {
         `);
 
         await pool.query(`
-            CREATE TABLE IF NOT EXISTS portfolios (
-                id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-                user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-                stock_symbol VARCHAR(25) NOT NULL,
-                quantity DECIMAL NOT NULL,
-                purchase_price DECIMAL NOT NULL,
-                purchase_date DATE DEFAULT CURRENT_DATE,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );
-        `);
+          CREATE TABLE IF NOT EXISTS holdings (
+              user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+              stock_symbol VARCHAR(25) NOT NULL,
+              quantity DECIMAL NOT NULL,
+              avg_purchase_price DECIMAL NOT NULL,
+              last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+              PRIMARY KEY (user_id, stock_symbol)
+          );
+      `);
 
-      
+      await pool.query(`
+        CREATE TABLE IF NOT EXISTS crypto_holdings (
+            user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+            crypto_symbol VARCHAR(25) NOT NULL,
+            quantity DECIMAL NOT NULL,
+            avg_purchase_price DECIMAL NOT NULL,
+            last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (user_id, crypto_symbol)
+        );
+    `);
+
+      await pool.query(`
+          CREATE TABLE IF NOT EXISTS transactions (
+              transaction_id SERIAL PRIMARY KEY,
+              user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+              type VARCHAR(4) CHECK (type IN ('BUY', 'SELL')),
+              asset_type VARCHAR(10) CHECK (asset_type IN ('STOCK', 'CRYPTO')),
+              symbol_name VARCHAR(25) NOT NULL,
+              quantity DECIMAL NOT NULL,
+              price_per_share DECIMAL NOT NULL,
+              total_amount DECIMAL NOT NULL,
+              transaction_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+          );
+      `);
+
+      await pool.query(`
+        CREATE TABLE IF NOT EXISTS net_worth_history (
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+          user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+          snapshot_date DATE NOT NULL,
+          balance DECIMAL(12,2) NOT NULL,
+          portfolio_value DECIMAL(12,2) NOT NULL,
+          net_worth DECIMAL(12,2) NOT NULL,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          UNIQUE(user_id, snapshot_date)
+        );
+      `)
+
+      await pool.query(`
+    CREATE TABLE IF NOT EXISTS stock_prices (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        symbol VARCHAR(25) NOT NULL,
+        name VARCHAR(100),
+        current_price DECIMAL(12,4) NOT NULL,
+        previous_close DECIMAL(12,4),
+        price_change DECIMAL(12,4),
+        price_change_percent DECIMAL(8,4),
+        volume BIGINT,
+        last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        date DATE GENERATED ALWAYS AS (last_updated::DATE) STORED,
+        UNIQUE(symbol, date)
+    );
+`);
 
         await pool.query(`
       CREATE TABLE IF NOT EXISTS top_gainers (

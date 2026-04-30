@@ -1,25 +1,34 @@
 import nodeCron from "node-cron";
 import {
     updateCalculations, updateCoinMarketOverview, 
-    updateMarketOverview, updateTopChanges, updateTopChangesCoins
+    updateMarketOverview, updateStockPricesTable, updateTopChanges, updateTopChangesCoins
 } from "../services/dataRefreshService"
+import { captureDailyNetWorth } from "../services/transactionService";
 
-nodeCron.schedule('26 11 * * *', async () => {
+nodeCron.schedule('56 14 * * *', async () => {
     await updateTopChanges();
 });
 
-nodeCron.schedule('27 11 * * *', async () => { 
+nodeCron.schedule('56 14 * * *', async () => { 
     await updateMarketOverview();
 });
 
-nodeCron.schedule('28 11 * * *', async () => { 
+nodeCron.schedule('57 14 * * *', async () => { 
     await updateCalculations();
 });
 
-nodeCron.schedule('29 11 * * *', async () => { 
+nodeCron.schedule('55 15 * * *', async () => { 
     await updateCoinMarketOverview();
 });
 
-nodeCron.schedule('30 11 * * *', async () => { 
+nodeCron.schedule('51 15 * * *', async () => { 
     await updateTopChangesCoins();
 });
+
+nodeCron.schedule('05 15 * * *', async () => {
+    await updateStockPricesTable()
+})
+
+nodeCron.schedule('43 19 * * *', async () => {
+    await captureDailyNetWorth()
+})
