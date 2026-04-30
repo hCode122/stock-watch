@@ -7,7 +7,7 @@
     "dev": "nodemon src/index.ts",
     "dev:debug": "nodemon --inspect src/index.ts",
     "build": "tsc --skipLibCheck",
-    "start": "node dist/index.js",
+    "start": "npm run migrate && node dist/index.js",
     "start:dev": "ts-node src/index.ts",
     "db:init": "ts-node src/scripts/initDatabase.ts",
     "db:reset": "ts-node src/scripts/resetDatabase.ts",
@@ -35,11 +35,11 @@
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.5",
+    "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/morgan": "^1.9.10",
-    "@types/node": "^24.10.0",
-    "@types/pg": "^8.15.6",
+    "@types/node": "^24.12.2",
+    "@types/pg": "^8.20.0",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
