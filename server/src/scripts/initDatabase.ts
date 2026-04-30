@@ -2,8 +2,6 @@ import {pool} from "../config/database";
 
 export const initDatabase = async () => {
     try {
-          await pool.connect()
-
         await pool.query(`
             CREATE TABLE IF NOT EXISTS users (
               id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -240,9 +238,7 @@ export const initDatabase = async () => {
   } catch (error) {
     console.error('Error initializing database:', error);
     throw error;
-  } finally {
-    await pool.end()
-  }
+  } 
 };
 if (require.main === module) {
   initDatabase()
