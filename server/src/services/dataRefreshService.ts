@@ -1,4 +1,4 @@
-import { coin_resp, top_coin_data, market_overview_response, top_changed_response, index_calc_response, index_calc, coin_overview } from "@/types/marketTypes";
+import { coin_resp, top_coin_data, market_overview_response, top_changed_response, index_calc_response, index_calc, coin_overview } from "../types/marketTypes";
 import { alphaVintageInstance } from "../axios/alphaVintageInstance";
 import { pool } from "../config/database";
 import { envConfig } from "../config/environment";

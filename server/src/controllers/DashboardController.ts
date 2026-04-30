@@ -1,4 +1,4 @@
-import { AuthRequest } from "@/middleware/auth";
+import { AuthRequest } from "../middleware/auth";
 import { getNetworthHistory, getTransactions, getUserPortfolio, Purchase } from "../services/transactionService"
 import { Request, Response } from "express"
 
