@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
+    "lib": ["dom", "dom.iterable", "esnext", "ES2020"],
+    "types": ["node", "express"],
     "target": "ES2020",
     "module": "commonjs",
-    "lib": ["ES2020"],
     "outDir": "./dist",
     "rootDir": "./src",
     "strict": false,
