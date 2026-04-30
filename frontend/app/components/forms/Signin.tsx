@@ -57,7 +57,7 @@ const SigninForm = () => {
                 user: resp.data.data.user,
                 token: resp.data.data.token
             }))
-            router.push('/market');
+            router.push('/dashboard');
         } else {
             console.log('Signup failed:', resp.error);
             toast.error(resp.error || "Signup failed. Please try again.");
@@ -65,7 +65,7 @@ const SigninForm = () => {
     }
 
     return (
-        <form onSubmit={form.handleSubmit(onSubmit)} className='mt-8 p-4 lg:w-[90%] w-[95%] '>
+        <form onSubmit={form.handleSubmit(onSubmit)} className='mt-8 p-4 lg:w-[90%] w-[95%] text-black md:text-white'>
           
             <FieldGroup className='overflow-y-auto  gap-4 animation-form-stage1 '>
                 <Controller 
@@ -125,7 +125,7 @@ const SigninForm = () => {
                         name="rememberMe"
                         control={form.control}
                         render={({field, fieldState}) => (
-                            <Field orientation="horizontal" className="">
+                            <Field orientation="horizontal" className="ml-1">
                                 <Checkbox 
                                     id="rememberBox" 
                                     checked={field.value} 

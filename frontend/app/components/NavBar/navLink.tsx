@@ -7,14 +7,15 @@ interface Props {
 
 interface NavMeta {
     text: string;
-    target: string
+    target: string;
+    light: boolean
 }
 
 const NavLink = ({navProbs} : Props) => {
     const currPage = usePathname()
     const isActive = currPage === navProbs.target;
     return <div className={`flex items-center justify-center font-[500] text-lg last:ml-auto
-            hover:text-special text-muted transition duration-200 ${isActive? 'text-special' : ''}`}>
+            hover:text-special ${ navProbs.light?  'text-white' :'text-muted'} transition duration-200 ${isActive? 'text-special' : ''}`}>
         <Link className="" href={navProbs.target}>{navProbs.text}</Link>
     </div>
 }
