@@ -10,10 +10,12 @@ import { useState } from 'react';
 import { Eye, EyeClosed } from 'lucide-react';
 import { useSignUp } from '@/hooks/useSignUp';
 import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
+
 const formSchema = z.object({
         username: z.string().min(3, "Username must be at least 3 characters"),
         email: z.string().email("Doesn't match a valid email format"),
-        password: z.string().min(8, "Passsword most be at least 8 characters")
+        password: z.string().min(8, "Password must be at least 8 characters")
         .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
         .regex(/[a-z]/, "Password must contain at least one lowercase letter")
         .regex(/[0-9]/, "Password must contain at least one number")
@@ -30,6 +32,7 @@ type formSchemaType = z.infer<typeof formSchema>
 const SignUpForm = () => {
  
     const [stage, setStage] = useState(1); 
+    const router = useRouter()
     
     const form = useForm<formSchemaType>({
         resolver: zodResolver(formSchema),
@@ -59,7 +62,7 @@ const SignUpForm = () => {
          if (resp.success) {
             console.log('Signup successful:', resp.data);
             toast.success("Account created successfully! Please log in.");
-            // router.push('/login');
+            router.push('/sign-in');
         } else {
             console.log('Signup failed:', resp.error);
             toast.error(resp.error || "Signup failed. Please try again.");
@@ -78,11 +81,11 @@ const SignUpForm = () => {
     }
 
     return (
-        <form onSubmit={form.handleSubmit(onSubmit)} className='mt-8 p-4 lg:w-[90%] w-[95%] '>
+        <form onSubmit={form.handleSubmit(onSubmit)} className='w-full max-w-md mx-auto'>
            {stage === 1 && (
                 <>
                     <StageOne form={form} />
-                    <Field className='mt-8'>
+                    <Field className='mt-6'>
                         <Button 
                             type="button" 
                             onClick={handleNext}
@@ -99,7 +102,7 @@ const SignUpForm = () => {
                 <>
                     <StageTwo form={form} />
                     
-                    <Field className='mt-8 flex gap-2'>
+                    <div className='flex gap-3 mt-6'>
                         <Button 
                             type="button" 
                             onClick={handleBack}
@@ -114,10 +117,9 @@ const SignUpForm = () => {
                         >
                             Sign Up
                         </Button>
-                    </Field>
+                    </div>
                 </>
             )}
-
         </form>
     )
 }
@@ -125,42 +127,42 @@ const SignUpForm = () => {
 const StageOne = ({form} : {form : UseFormReturn<formSchemaType>}) => {
 
     return (
-         <FieldGroup className='overflow-y-auto  gap-4 animation-form-stage1 '>
-                <Controller 
-                    name="username"
-                    control={form.control}
-                    render={({field, fieldState}) => (
-                        <Field >
-                            <FieldLabel className='text-[0.8rem]' htmlFor='form-username'>
-                                Username
-                            </FieldLabel>
-                            <Input {...field} className='h-8' id="form-username" aria-invalid={fieldState.invalid} />
-                            <div className='h-5 block'>
-                                {fieldState.invalid && (
-                                    <FieldError errors={[fieldState.error]} />
-                                )}
-                            </div>
-                        </Field>
-                    )}    
-                />
-                <Controller 
-                    name="email"
-                    control={form.control}
-                    render={({field, fieldState}) => (
-                        <Field >
-                            <FieldLabel className='text-[0.8rem]' htmlFor='form-email'>
-                                Email address
-                            </FieldLabel>
-                            <Input {...field} className='h-8' id="form-email" aria-invalid={fieldState.invalid} placeholder="email@company.com" />
-                            <div className='h-5 block'>
-                                {fieldState.invalid && (
-                                    <FieldError errors={[fieldState.error]} />
-                                )}
-                            </div>
-                        </Field>
-                    )}    
-                />
-            </FieldGroup>
+         <FieldGroup className='space-y-4'>
+            <Controller 
+                name="username"
+                control={form.control}
+                render={({field, fieldState}) => (
+                    <Field>
+                        <FieldLabel className='text-[0.8rem] text-foreground' htmlFor='form-username'>
+                            Username
+                        </FieldLabel>
+                        <Input {...field} className='h-9 w-full' id="form-username" aria-invalid={fieldState.invalid} />
+                        <div className='h-5'>
+                            {fieldState.invalid && (
+                                <FieldError errors={[fieldState.error]} />
+                            )}
+                        </div>
+                    </Field>
+                )}    
+            />
+            <Controller 
+                name="email"
+                control={form.control}
+                render={({field, fieldState}) => (
+                    <Field>
+                        <FieldLabel className='text-[0.8rem] text-foreground' htmlFor='form-email'>
+                            Email address
+                        </FieldLabel>
+                        <Input {...field} className='h-9 w-full' id="form-email" aria-invalid={fieldState.invalid} placeholder="email@company.com" />
+                        <div className='h-5'>
+                            {fieldState.invalid && (
+                                <FieldError errors={[fieldState.error]} />
+                            )}
+                        </div>
+                    </Field>
+                )}    
+            />
+        </FieldGroup>
     )
 }
 
@@ -169,81 +171,80 @@ const StageTwo = ({form} : {form : UseFormReturn<formSchemaType>}) => {
     const [passwordConfirmVisible, setConfirmVisible] = useState(false)
 
     return (
-            <FieldGroup className='overflow-y-auto gap-4 animation-form-stage2'>
-              <Controller 
-                    name="password"
-                    control={form.control}
-                    render={({field, fieldState}) => (
-                        <Field >
-                            <FieldLabel className='text-[0.8rem]' htmlFor='form-password'>
-                                Password
-                            </FieldLabel>
-                            <div className="relative">
-                                <Input
-                                    {...field}
-                                    type={passwordVisible ? "text" : "password"}
-                                    className={`pr-10 h-8`}
-                                    id="form-password"
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => setVisible(!passwordVisible)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 hover:bg-gray-100 p-1 rounded-md"
-                                    tabIndex={-1}
-                                >
-                                    {passwordVisible ? (
-                                    <Eye className="h-4 w-4 text-gray-500" />
-                                    ) : (
-                                    <EyeClosed className="h-4 w-4 text-gray-500" />
-                                    )}
-                                </button>
-                            </div>
-                            <div className='h-5 block'>
-                                {fieldState.invalid && (
-                                    <FieldError errors={[fieldState.error]} />
+        <FieldGroup className='space-y-4'>
+            <Controller 
+                name="password"
+                control={form.control}
+                render={({field, fieldState}) => (
+                    <Field>
+                        <FieldLabel className='text-[0.8rem] text-foreground' htmlFor='form-password'>
+                            Password
+                        </FieldLabel>
+                        <div className="relative">
+                            <Input
+                                {...field}
+                                type={passwordVisible ? "text" : "password"}
+                                className="pr-10 h-9 w-full"
+                                id="form-password"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setVisible(!passwordVisible)}
+                                className="absolute right-2 top-1/2 -translate-y-1/2 hover:bg-muted p-1 rounded-md"
+                                tabIndex={-1}
+                            >
+                                {passwordVisible ? (
+                                    <Eye className="h-4 w-4 text-muted-foreground" />
+                                ) : (
+                                    <EyeClosed className="h-4 w-4 text-muted-foreground" />
                                 )}
-                            </div>
-                        </Field>
-                    )}    
-                />
-                <Controller 
-                    name="confirmPassword"
-                    control={form.control}
-                    render={({field, fieldState}) => (
-                        <Field >
-                            <FieldLabel className='text-[0.8rem]' htmlFor='form-confirm'>
-                                Confirm Password
-                            </FieldLabel>
-                            <div className="relative">
-                                <Input
-                                    {...field}
-                                    type={passwordConfirmVisible ? "text" : "password"}
-                                    className={`pr-10 h-8`}
-                                    id="form-confirm"
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => setConfirmVisible(!passwordConfirmVisible)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 hover:bg-gray-100 p-1 rounded-md"
-                                    tabIndex={-1}
-                                >
-                                    {passwordConfirmVisible ? (
-                                    <Eye className="h-4 w-4 text-gray-500" />
-                                    ) : (
-                                    <EyeClosed className="h-4 w-4 text-gray-500" />
-                                    )}
-                                </button>
-                                
-                            </div>
-                            <div className='h-5 block'>
-                                {fieldState.invalid && (
-                                    <FieldError errors={[fieldState.error]} />
+                            </button>
+                        </div>
+                        <div className='h-5'>
+                            {fieldState.invalid && (
+                                <FieldError errors={[fieldState.error]} />
+                            )}
+                        </div>
+                    </Field>
+                )}    
+            />
+            <Controller 
+                name="confirmPassword"
+                control={form.control}
+                render={({field, fieldState}) => (
+                    <Field>
+                        <FieldLabel className='text-[0.8rem] text-foreground' htmlFor='form-confirm'>
+                            Confirm Password
+                        </FieldLabel>
+                        <div className="relative">
+                            <Input
+                                {...field}
+                                type={passwordConfirmVisible ? "text" : "password"}
+                                className="pr-10 h-9 w-full"
+                                id="form-confirm"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setConfirmVisible(!passwordConfirmVisible)}
+                                className="absolute right-2 top-1/2 -translate-y-1/2 hover:bg-muted p-1 rounded-md"
+                                tabIndex={-1}
+                            >
+                                {passwordConfirmVisible ? (
+                                    <Eye className="h-4 w-4 text-muted-foreground" />
+                                ) : (
+                                    <EyeClosed className="h-4 w-4 text-muted-foreground" />
                                 )}
-                            </div>
-                        </Field>
-                    )}    
-                />
-            </FieldGroup>
+                            </button>
+                        </div>
+                        <div className='h-5'>
+                            {fieldState.invalid && (
+                                <FieldError errors={[fieldState.error]} />
+                            )}
+                        </div>
+                    </Field>
+                )}    
+            />
+        </FieldGroup>
     )
 }
 
