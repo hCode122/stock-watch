@@ -11,14 +11,14 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL
 export const useGetUserNetworth = () => {
     const [loadingNetworth, setIsLoading] = useState(false);
     const [errorNetworth, setError] = useState<string | null>(null);
-    const [networth, setData] = useState<NetWorthResponse | null>(null);
+    const [networth, setData] = useState<NetWorthData[] | null>(null);
     
      const getNetworthHistory = async () => {
             try {
                 setIsLoading(true)
-                const response = await axios.get<NetWorthData[]>(`${API_BASE}/api/dashboard/networth`)
+                const response = await axios.get<NetWorthResponse>(`${API_BASE}/api/dashboard/networth`)
                 
-                setData({data:response.data})
+                setData(response.data.data)
                 setIsLoading(false)
                 
                 

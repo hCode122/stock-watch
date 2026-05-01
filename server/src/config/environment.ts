@@ -14,7 +14,7 @@ export const envConfig = {
     },
     
     jwt: {
-        secret: process.env.JWT_SECRET || '', 
+        secret: process.env.JWT_SECRET || 'asdsadsasa2123', 
         expiresIn: process.env.JWT_EXPIRES_IN || '7d',
     },
     

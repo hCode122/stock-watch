@@ -37,9 +37,8 @@ const Dashboard = () => {
         
         return () => clearTimeout(timer);
     }, [isAuthorized, token, router]);
-
+    console.log(networth)
     const isLoading = (!isAuthorized && !token) || loadingPortfolio || loadingNetworth || loadingTransactions;
-    
     if (!isAuthorized && !token) {
         return (
             <div className="h-full max-w-full flex-col mx-8 gap-12 pb-16">
@@ -68,30 +67,26 @@ const Dashboard = () => {
         <div className="h-full max-w-full flex-col mx-8 gap-12 pb-16">
             <NavBar />
             
-            {networth?.data && portfolio?.data && networth.data.length > 0 && (
-                <ExtraStats 
-                    portfolio={portfolio.data} 
-                    networth={{
-                        net_worth: networth.data[networth.data.length - 1]?.net_worth ?? 0,
-                        balance: networth.data[networth.data.length - 1]?.balance ?? 0,
-                        portfolio_value: networth.data[networth.data.length - 1]?.portfolio_value ?? 0
-                    }}
+            {networth && networth.length > 0 && (
+                <NetWorthCard 
+                    data={networth}  
                     loading={loadingNetworth} 
+                    error={errorNetworth}
                 />
-            )}
+)}
             
-            {networth?.data && portfolio?.data && networth.data.length > 0 && (
+            {networth && portfolio && networth.length > 0 && (
                 <ExtraStats 
-                    portfolio={portfolio.data} 
-                    networth={networth.data[networth.data.length - 1]}
+                    portfolio={portfolio} 
+                    networth={networth[networth.length - 1]}
                     loading={loadingNetworth} 
                 />
             )}
             
             <h2 className="text-[1.2rem] lg:text-[1.6rem] font-bold mt-12 mb-4">Holdings</h2>
-            {portfolio?.data ? (
+            {portfolio ? (
                 <PortfolioCard 
-                    data={portfolio.data} 
+                    data={portfolio} 
                     loading={loadingPortfolio} 
                     error={errorPortfolio}
                     onSuccess={refreshAll}

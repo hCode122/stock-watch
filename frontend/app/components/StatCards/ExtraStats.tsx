@@ -8,9 +8,9 @@ interface StatsCardsProps {
         cashBalance?: number;
     };
     networth: {
-        net_worth?: number;
-        balance?: number;
-        portfolio_value?: number;
+        net_worth?: string;
+        balance?: string;
+        portfolio_value?: string;
     };
     loading: boolean;
 }
@@ -36,7 +36,7 @@ export const ExtraStats = ({ portfolio, networth, loading }: StatsCardsProps) =>
 
     const cashBalance = portfolio?.cashBalance ?? networth?.balance ?? 0;
     const portfolioValue = portfolio?.totalValue ?? networth?.portfolio_value ?? 0;
-    const netWorth = networth?.net_worth ?? (cashBalance + portfolioValue);
+    const netWorth = networth?.net_worth ?? (Number(cashBalance) + Number(portfolioValue));
     const holdingsCount = portfolio?.holdings?.length ?? 0;
 
     const stats = [
@@ -62,7 +62,7 @@ export const ExtraStats = ({ portfolio, networth, loading }: StatsCardsProps) =>
                         <div className="flex justify-between items-start">
                             <div>
                                 <p className="text-[10px] sm:text-sm text-muted-foreground">{stat.title}</p>
-                                <p className="text-sm sm:text-2xl font-bold mt-1 sm:mt-2">{formatValue(stat.value, stat.format)}</p>
+                                <p className="text-sm sm:text-2xl font-bold mt-1 sm:mt-2">{formatValue(Number(stat.value), stat.format)}</p>
                                 {stat.trend && <p className="text-[8px] sm:text-xs text-muted-foreground mt-0.5 sm:mt-1">{stat.trend}</p>}
                             </div>
                             <div className="p-1.5 sm:p-2 bg-purple-600 rounded-full group-hover:scale-110 transition-transform duration-300">

@@ -34,7 +34,6 @@ export const getUserNetworthHandler = async (req: AuthRequest, res: Response) =>
         }
         
         const networthData = await getNetworthHistory(userId)
-
         return res.json({
                 sucess: true,
                 data: networthData

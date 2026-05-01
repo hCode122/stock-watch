@@ -17,7 +17,7 @@ import { useState, useEffect } from "react";
 
 interface NetWorthData {
   date: string;
-  balance: string;
+  balance: string ;
   portfolio_value: string;
   net_worth: string;
 }

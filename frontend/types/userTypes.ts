@@ -18,9 +18,9 @@ export interface PortfolioResponse {
 
 export interface NetWorthData {
     date: string;
-    balance: number;
-    portfolio_value: number;
-    net_worth: number;
+    balance: string;
+    portfolio_value: string;
+    net_worth: string;
 }
 
 export interface NetWorthResponse {

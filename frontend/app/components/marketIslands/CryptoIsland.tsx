@@ -48,7 +48,7 @@ const CryptoIsland = () => {
                 </div>
             </div>
             <div className="flex justify-center">
-            <Button onClick={() => scrollToSection('stock')} className="mx-auto mt-14 py-8 w-42 bg-special"> Back to top <ArrowBigUp className="h-16" /></Button>
+            <Button onClick={() => scrollToSection('stock')} className="mx-auto mt-14 py-4 w-36 bg-special"> Back to top <ArrowBigUp className="h-12" /></Button>
             </div>
         </div>
     )
