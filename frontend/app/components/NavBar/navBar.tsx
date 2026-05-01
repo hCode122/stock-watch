@@ -7,7 +7,7 @@ import { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useRouter } from "next/navigation"
 import { logout, selectAuthState } from "@/state/slices/authSlice"
-
+import { Button } from "@/components/ui/button"
 export const NavBar = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
     const [isDarkMode, setIsDarkMode] = useState(false)
@@ -85,7 +85,7 @@ export const NavBar = () => {
                                 <Moon className="h-5 w-5 text-foreground" />
                             )}
                         </button>
-                        {isAuthorized && (
+                        {isAuthorized ? (
                             <button
                                 onClick={handleLogout}
                                 className="p-2 rounded-lg hover:bg-red-500/10 transition-colors"
@@ -93,6 +93,12 @@ export const NavBar = () => {
                             >
                                 <LogOut className="h-5 w-5 text-red-500" />
                             </button>
+                        ) : (
+                            <Link href="/sign-in">
+                                <Button variant="ghost" className="text-foreground hover:text-special">
+                                    Sign In
+                                </Button>
+                            </Link>
                         )}
                     </div>
 
