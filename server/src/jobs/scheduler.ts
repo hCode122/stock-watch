@@ -1,34 +1,60 @@
 import nodeCron from "node-cron";
 import {
-    updateCalculations, updateCoinMarketOverview, 
-    updateMarketOverview, updateStockPricesTable, updateTopChanges, updateTopChangesCoins
-} from "../services/dataRefreshService"
+    updateCalculations,
+    updateCoinMarketOverview,
+    updateMarketOverview,
+    updateStockPricesTable,
+    updateTopChanges,
+    updateTopChangesCoins
+} from "../services/dataRefreshService";
 import { captureDailyNetWorth } from "../services/transactionService";
 
-nodeCron.schedule('56 14 * * *', async () => {
-    await updateTopChanges();
-});
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-nodeCron.schedule('56 14 * * *', async () => { 
-    await updateMarketOverview();
-});
+const runAllJobs = async () => {
+    console.log('Starting daily data refresh...');
+    const startTime = Date.now();
+    
+    try {
+        await updateTopChanges();
+        console.log('Top changes completed');
+        await delay(30000); 
+        
+        await updateMarketOverview();
+        console.log('Market overview completed');
+        await delay(30000);
+        
+        await updateCalculations();
+        console.log('Calculations completed');
+        await delay(30000);
+        
+        await updateCoinMarketOverview();
+        console.log('Coin market overview completed');
+        await delay(30000);
+        
+        await updateTopChangesCoins();
+        console.log('Top changes coins completed');
+        await delay(30000);
+        
+        await updateStockPricesTable();
+        console.log('Stock prices table completed');
+        await delay(60000);
+        
+        await captureDailyNetWorth();
+        console.log('Net worth capture completed');
+        
+        const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+        console.log(`All jobs completed in ${duration} seconds`);
+        
+    } catch (error) {
+        console.error('Job failed:', error);
+    }
+};
 
-nodeCron.schedule('57 14 * * *', async () => { 
-    await updateCalculations();
-});
+nodeCron.schedule('0 20 * * *', runAllJobs);
 
-nodeCron.schedule('55 15 * * *', async () => { 
-    await updateCoinMarketOverview();
-});
+if (process.env.NODE_ENV !== 'production') {
 
-nodeCron.schedule('51 15 * * *', async () => { 
-    await updateTopChangesCoins();
-});
+}
 
-nodeCron.schedule('05 15 * * *', async () => {
-    await updateStockPricesTable()
-})
-
-nodeCron.schedule('43 19 * * *', async () => {
-    await captureDailyNetWorth()
-})
+export { runAllJobs };
