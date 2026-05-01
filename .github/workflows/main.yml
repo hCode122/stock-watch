@@ -1,0 +1,20 @@
+name: Daily Market Data Update
+
+on:
+  schedule:
+    - cron: '0 20 * * *'
+  workflow_dispatch:
+
+jobs:
+  trigger-backend-update:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Trigger backend cron job
+        run: |
+          curl -X GET https://stock-watch-nfpt.onrender.com/api/cron/trigger \
+            -H "x-api-key: ${{ secrets.CRON_API_KEY }}"
+      
+      - name: Log response
+        run: |
+          echo "Cron job triggered at $(date)"
