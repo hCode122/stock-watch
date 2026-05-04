@@ -1,6 +1,6 @@
 'use client'
 
-import { CoinsIcon, Menu, X, Sun, Moon, LogOut } from "lucide-react"
+import { CoinsIcon, Menu, X, Sun, Moon, LogOut, TrendingUp, LayoutDashboard, User } from "lucide-react"
 import NavLink from "./navLink"
 import Link from "next/link"
 import { useState, useEffect } from "react"
@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { useRouter } from "next/navigation"
 import { logout, selectAuthState } from "@/state/slices/authSlice"
 import { Button } from "@/components/ui/button"
+
 export const NavBar = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
     const [isDarkMode, setIsDarkMode] = useState(false)
@@ -16,8 +17,8 @@ export const NavBar = () => {
     const isAuthorized = useSelector(selectAuthState)
 
     const navLinkList = [
-        { text: "Dashboard", target: "/dashboard", light: false },
-        { text: "Market", target: "/market", light: false }
+        { text: "Dashboard", target: "/dashboard", light: false, icon: LayoutDashboard },
+        { text: "Market", target: "/market", light: false, icon: TrendingUp }
     ]
 
     useEffect(() => {
@@ -58,13 +59,13 @@ export const NavBar = () => {
 
     return (
         <>
-            <nav className="w-full bg-card rounded-xl mb-4 mt-2 shadow-sm border border-border/50">
+            <nav className="w-full bg-card/80 backdrop-blur-md rounded-2xl mb-4 mt-2 shadow-lg border border-special/20">
                 <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4">
-                    <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity group">
-                        <div className="p-1.5 rounded-lg bg-special/10 group-hover:bg-special/20 transition-colors">
+                    <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-all group">
+                        <div className="p-2 rounded-xl bg-gradient-to-br from-special/20 to-special/5 group-hover:from-special/30 group-hover:to-special/10 transition-all">
                             <CoinsIcon className="h-6 w-6 sm:h-7 sm:w-7 text-special" />
                         </div>
-                        <span className="text-foreground font-bold text-lg sm:text-xl hidden xs:block">
+                        <span className="text-foreground font-bold text-lg sm:text-xl bg-gradient-to-r from-foreground to-special bg-clip-text text-transparent hidden xs:block">
                             StockWatch
                         </span>
                     </Link>
@@ -73,10 +74,10 @@ export const NavBar = () => {
                         {navLinkList.map((link, index) => (
                             <NavLink key={index} navProbs={link} />
                         ))}
-                        <div className="w-[2px] h-8 bg-special" />
+                        <div className="w-px h-6 bg-special/30" />
                         <button
                             onClick={toggleDarkMode}
-                            className="p-2 rounded-lg hover:bg-muted/50 transition-colors"
+                            className="p-2 rounded-xl hover:bg-muted/50 transition-all"
                             aria-label="Toggle dark mode"
                         >
                             {isDarkMode ? (
@@ -88,14 +89,14 @@ export const NavBar = () => {
                         {isAuthorized ? (
                             <button
                                 onClick={handleLogout}
-                                className="p-2 rounded-lg hover:bg-red-500/10 transition-colors"
+                                className="p-2 rounded-xl hover:bg-red-500/10 transition-all group"
                                 aria-label="Sign out"
                             >
-                                <LogOut className="h-5 w-5 text-red-500" />
+                                <LogOut className="h-5 w-5 text-red-500 group-hover:scale-110 transition-transform" />
                             </button>
                         ) : (
                             <Link href="/sign-in">
-                                <Button variant="ghost" className="text-foreground hover:text-special">
+                                <Button variant="ghost" className="text-foreground hover:text-special rounded-xl">
                                     Sign In
                                 </Button>
                             </Link>
@@ -104,7 +105,7 @@ export const NavBar = () => {
 
                     <button
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                        className="md:hidden flex items-center justify-center p-2 rounded-lg hover:bg-muted/50 transition-colors"
+                        className="md:hidden flex items-center justify-center p-2 rounded-xl hover:bg-muted/50 transition-all"
                         aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
                     >
                         {isMobileMenuOpen ? (
@@ -117,48 +118,81 @@ export const NavBar = () => {
             </nav>
 
             {isMobileMenuOpen && (
-                <div className="fixed inset-0 z-40 md:hidden">
+                <div className="fixed inset-0 z-50 md:hidden">
                     <div 
-                        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                        className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300"
                         onClick={() => setIsMobileMenuOpen(false)}
                     />
                     
-                    <div className="absolute right-0 top-0 bottom-0 w-64 bg-card shadow-xl rounded-l-xl border-l border-border">
-                        <div className="flex flex-col p-6 pt-20 space-y-2">
-                            {navLinkList.map((link, index) => (
-                                <div key={index} onClick={() => setIsMobileMenuOpen(false)}>
-                                    <Link 
-                                        href={link.target}
-                                        className="block text-foreground hover:text-special hover:bg-muted/50 transition-colors py-3 px-4 rounded-lg"
-                                    >
-                                        {link.text}
-                                    </Link>
+                    <div className="absolute right-0 top-0 bottom-0 w-[280px] bg-card/95 backdrop-blur-md shadow-2xl rounded-l-2xl border-l border-special/20 animate-slide-in-right">
+                        <div className="p-6 border-b border-special/20">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 rounded-xl bg-gradient-to-br from-special/20 to-special/5">
+                                    <CoinsIcon className="h-8 w-8 text-special" />
                                 </div>
-                            ))}
-                            <div className="pt-4 mt-4 border-t border-border">
+                                <div>
+                                    <p className="font-bold text-lg text-foreground">StockWatch</p>
+                                    <p className="text-xs text-muted-foreground">Trade smarter</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex-1 py-4">
+                            {navLinkList.map((link, index) => {
+                                const Icon = link.icon
+                                return (
+                                    <Link
+                                        key={index}
+                                        href={link.target}
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                        className="flex items-center gap-4 px-6 py-4 text-foreground hover:bg-special/10 transition-all group"
+                                    >
+                                        <div className="p-2 rounded-lg bg-gray-300  group-hover:bg-special/20 transition-all">
+                                            <Icon className="h-5 w-5 text-special" />
+                                        </div>
+                                        <span className="font-medium">{link.text}</span>
+                                    </Link>
+                                )
+                            })}
+                        </div>
+
+                        <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-special/20 bg-gradient-to-t from-card to-transparent">
+                            <button
+                                onClick={() => {
+                                    toggleDarkMode()
+                                    setIsMobileMenuOpen(false)
+                                }}
+                                className="flex items-center gap-3 w-full px-4 py-3 rounded-xl hover:bg-muted/50 transition-all mb-2"
+                            >
+                                {isDarkMode ? (
+                                    <Sun className="h-5 w-5 text-foreground" />
+                                ) : (
+                                    <Moon className="h-5 w-5 text-foreground" />
+                                )}
+                                <span className="text-foreground">{isDarkMode ? 'Light Mode' : 'Dark Mode'}</span>
+                            </button>
+                            
+                            {isAuthorized ? (
                                 <button
                                     onClick={() => {
-                                        toggleDarkMode()
+                                        handleLogout()
                                         setIsMobileMenuOpen(false)
                                     }}
-                                    className="w-full text-left text-foreground hover:text-special hover:bg-muted/50 transition-colors py-3 px-4 rounded-lg flex items-center gap-3"
+                                    className="flex items-center gap-3 w-full px-4 py-3 rounded-xl hover:bg-red-500/10 transition-all group"
                                 >
-                                    {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-                                    {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+                                    <LogOut className="h-5 w-5 text-red-500 group-hover:scale-110 transition-transform" />
+                                    <span className="text-red-500">Sign Out</span>
                                 </button>
-                                {isAuthorized && (
-                                    <button
-                                        onClick={() => {
-                                            handleLogout()
-                                            setIsMobileMenuOpen(false)
-                                        }}
-                                        className="w-full text-left text-red-500 hover:bg-red-500/10 transition-colors py-3 px-4 rounded-lg flex items-center gap-3"
-                                    >
-                                        <LogOut className="h-4 w-4" />
-                                        Sign Out
-                                    </button>
-                                )}
-                            </div>
+                            ) : (
+                                <Link
+                                    href="/sign-in"
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className="flex items-center gap-3 w-full px-4 py-3 rounded-xl hover:bg-special/10 transition-all"
+                                >
+                                    <User className="h-5 w-5 text-special" />
+                                    <span className="text-foreground">Sign In</span>
+                                </Link>
+                            )}
                         </div>
                     </div>
                 </div>

@@ -5,8 +5,8 @@ import { useEffect, useState } from "react"
 import { Dispatch } from "react"
 import { SetStateAction } from "react"
 import { Input } from "@/components/ui/input"
-import { useSelector } from "react-redux"
-import { selectBalance } from "@/state/slices/authSlice"
+import { useDispatch, useSelector } from "react-redux"
+import { selectBalance, setBalance } from "@/state/slices/authSlice"
 import { usePurchase } from "@/hooks/usePurchase"
 import { toast } from "sonner"
 
@@ -27,12 +27,16 @@ const BuyDialog = ({ stock, assetType,  setBuy, buy} : DialogProps) => {
     const [amount, setAmount] = useState(1)
     const [total_price, set_total] = useState(0)
 
+    const dispatch = useDispatch()
+
     const balance = useSelector(selectBalance)
+    const [newBalance, setNewBalance] = useState(0)
     const { purchase, isLoading, error, data } = usePurchase();
 
     useEffect(() => {
         const total = stock.price * amount
         set_total(Number(total.toFixed(2)))
+        setNewBalance(balance - total)
     }, [amount])
 
     const onSubmit = async () => {
@@ -45,6 +49,7 @@ const BuyDialog = ({ stock, assetType,  setBuy, buy} : DialogProps) => {
                 currPrice: buy.price,
             });
             
+            newBalance > 0 && dispatch(setBalance(newBalance));
             toast.success('Purchase successful!');
             console.log('Purchase result:', result);
             
