@@ -39,6 +39,8 @@ const BuyDialog = ({ stock, assetType,  setBuy, buy} : DialogProps) => {
         setNewBalance(balance - total)
     }, [amount])
 
+
+
     const onSubmit = async () => {
         try {
             const result = await purchase({
@@ -49,7 +51,9 @@ const BuyDialog = ({ stock, assetType,  setBuy, buy} : DialogProps) => {
                 currPrice: buy.price,
             });
             
-            newBalance > 0 && dispatch(setBalance(newBalance));
+            if (!isNaN(newBalance) && newBalance > 0) {
+                dispatch(setBalance({ balance: newBalance }));
+            }
             toast.success('Purchase successful!');
             console.log('Purchase result:', result);
             

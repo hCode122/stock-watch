@@ -5,8 +5,8 @@ import { useEffect, useState } from "react"
 import { Dispatch } from "react"
 import { SetStateAction } from "react"
 import { Input } from "@/components/ui/input"
-import { useSelector } from "react-redux"
-import { selectBalance } from "@/state/slices/authSlice"
+import { useDispatch, useSelector } from "react-redux"
+import { selectBalance, setBalance } from "@/state/slices/authSlice"
 import { useSell } from "@/hooks/useSell"
 import { toast } from "sonner"
 
@@ -30,15 +30,18 @@ const SellDialog = ({ holding, assetType, setSell, onSuccess }: DialogProps) => 
     const [totalValue, setTotalValue] = useState(0)
     const [futureBalance, setFutureBalance] = useState(0)
 
+    const dispatch = useDispatch()
+
     const balance = useSelector(selectBalance)
     const { sell, isLoading, error, data } = useSell();
 
     useEffect(() => {
         if (!holding) return;
         const total = holding.currentPrice * amount;
-        setTotalValue(Number(total.toFixed(2)));
+        const totalValueNum = Number(total.toFixed(2));
+        setTotalValue(totalValueNum);
+        
         const balanceNum = typeof balance === 'string' ? parseFloat(balance) : balance;
-        const totalValueNum = typeof totalValue === 'string' ? parseFloat(totalValue) : totalValue;
         setFutureBalance(Number((balanceNum + totalValueNum).toFixed(2)));
     }, [amount, holding, balance]);
 
@@ -61,6 +64,7 @@ const SellDialog = ({ holding, assetType, setSell, onSuccess }: DialogProps) => 
                 quantity: amount,
                 price: holding.currentPrice,
             });
+            dispatch(setBalance({ balance: futureBalance }))
             onSuccess()
             toast.success(`Sold ${amount} ${holding.symbol} successfully!`);
             setSell(null);
