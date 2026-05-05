@@ -70,10 +70,10 @@ const SigninForm = () => {
                     control={form.control}
                     render={({field, fieldState}) => (
                         <Field>
-                            <FieldLabel className='text-[0.8rem] text-foreground' htmlFor='form-email'>
+                            <FieldLabel className='text-[0.8rem] text-white' htmlFor='form-email'>
                                 Email address
                             </FieldLabel>
-                            <Input {...field} className='h-8 w-full' id="form-email" aria-invalid={fieldState.invalid} placeholder="email@company.com" />
+                            <Input {...field} className='h-8 w-full text-white border-background' id="form-email" aria-invalid={fieldState.invalid} placeholder="email@company.com" />
                             <div className='h-5'>
                                 {fieldState.invalid && (
                                     <FieldError errors={[fieldState.error]} />
@@ -88,26 +88,26 @@ const SigninForm = () => {
                     control={form.control}
                     render={({field, fieldState}) => (
                         <Field>
-                            <FieldLabel className='text-[0.8rem] text-foreground' htmlFor='form-password'>
+                            <FieldLabel className='text-[0.8rem] text-white ' htmlFor='form-password'>
                                 Password
                             </FieldLabel>
                             <div className="relative">
                                 <Input
                                     {...field}
                                     type={passwordVisible ? "text" : "password"}
-                                    className="pr-10 h-8 w-full"
+                                    className="pr-10 h-8 w-full text-white border-background"
                                     id="form-password"
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setVisible(!passwordVisible)}
-                                    className="absolute right-2 top-1/2 -translate-y-1/2 hover:bg-muted p-1 rounded-md"
+                                    className="absolute right-2 top-1/2 -translate-y-1/2 hover:bg-gray-300 p-1 rounded-md"
                                     tabIndex={-1}
                                 >
                                     {passwordVisible ? (
-                                        <Eye className="h-4 w-4 text-muted-foreground" />
+                                        <Eye className="h-4 w-4 text-special" />
                                     ) : (
-                                        <EyeClosed className="h-4 w-4 text-muted-foreground" />
+                                        <EyeClosed className="h-4 w-4 text-special" />
                                     )}
                                 </button>
                             </div>
@@ -120,28 +120,7 @@ const SigninForm = () => {
                     )}    
                 />
                 
-                <Controller 
-                    name="rememberMe"
-                    control={form.control}
-                    render={({field}) => (
-                        <Field orientation="horizontal" className="items-center gap-2">
-                            <Checkbox 
-                                id="rememberBox" 
-                                checked={field.value} 
-                                onCheckedChange={field.onChange}  
-                                onBlur={field.onBlur}
-                                ref={field.ref}
-                                name={field.name} 
-                                className="focus:ring-2 focus:ring-special"
-                            />
-                            <FieldContent>
-                                <FieldLabel className='text-[0.8rem] text-foreground' htmlFor="rememberBox">
-                                    Remember Me
-                                </FieldLabel>
-                            </FieldContent>
-                        </Field>
-                    )}
-                />
+                
                 
                 <Field className='mt-6'>
                     <Button 

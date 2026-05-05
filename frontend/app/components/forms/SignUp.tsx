@@ -133,10 +133,10 @@ const StageOne = ({form} : {form : UseFormReturn<formSchemaType>}) => {
                 control={form.control}
                 render={({field, fieldState}) => (
                     <Field>
-                        <FieldLabel className='text-[0.8rem] text-foreground' htmlFor='form-username'>
+                        <FieldLabel className='text-[0.8rem] text-white' htmlFor='form-username'>
                             Username
                         </FieldLabel>
-                        <Input {...field} className='h-9 w-full' id="form-username" aria-invalid={fieldState.invalid} />
+                        <Input {...field} className='h-9 w-full text-white' id="form-username" aria-invalid={fieldState.invalid} />
                         <div className='h-5'>
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
@@ -150,10 +150,10 @@ const StageOne = ({form} : {form : UseFormReturn<formSchemaType>}) => {
                 control={form.control}
                 render={({field, fieldState}) => (
                     <Field>
-                        <FieldLabel className='text-[0.8rem] text-foreground' htmlFor='form-email'>
+                        <FieldLabel className='text-[0.8rem] text-white' htmlFor='form-email'>
                             Email address
                         </FieldLabel>
-                        <Input {...field} className='h-9 w-full' id="form-email" aria-invalid={fieldState.invalid} placeholder="email@company.com" />
+                        <Input {...field} className='h-9 w-full text-white' id="form-email" aria-invalid={fieldState.invalid} placeholder="email@company.com" />
                         <div className='h-5'>
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
@@ -177,14 +177,14 @@ const StageTwo = ({form} : {form : UseFormReturn<formSchemaType>}) => {
                 control={form.control}
                 render={({field, fieldState}) => (
                     <Field>
-                        <FieldLabel className='text-[0.8rem] text-foreground' htmlFor='form-password'>
+                        <FieldLabel className='text-[0.8rem] text-white' htmlFor='form-password'>
                             Password
                         </FieldLabel>
                         <div className="relative">
                             <Input
                                 {...field}
                                 type={passwordVisible ? "text" : "password"}
-                                className="pr-10 h-9 w-full"
+                                className="pr-10 h-9 w-full text-white"
                                 id="form-password"
                             />
                             <button
@@ -194,9 +194,9 @@ const StageTwo = ({form} : {form : UseFormReturn<formSchemaType>}) => {
                                 tabIndex={-1}
                             >
                                 {passwordVisible ? (
-                                    <Eye className="h-4 w-4 text-muted-foreground" />
+                                    <Eye className="h-4 w-4 text-special" />
                                 ) : (
-                                    <EyeClosed className="h-4 w-4 text-muted-foreground" />
+                                    <EyeClosed className="h-4 w-4 text-special" />
                                 )}
                             </button>
                         </div>
@@ -213,14 +213,14 @@ const StageTwo = ({form} : {form : UseFormReturn<formSchemaType>}) => {
                 control={form.control}
                 render={({field, fieldState}) => (
                     <Field>
-                        <FieldLabel className='text-[0.8rem] text-foreground' htmlFor='form-confirm'>
+                        <FieldLabel className='text-[0.8rem] text-white' htmlFor='form-confirm'>
                             Confirm Password
                         </FieldLabel>
                         <div className="relative">
                             <Input
                                 {...field}
                                 type={passwordConfirmVisible ? "text" : "password"}
-                                className="pr-10 h-9 w-full"
+                                className="pr-10 h-9 w-full text-white"
                                 id="form-confirm"
                             />
                             <button
@@ -230,9 +230,9 @@ const StageTwo = ({form} : {form : UseFormReturn<formSchemaType>}) => {
                                 tabIndex={-1}
                             >
                                 {passwordConfirmVisible ? (
-                                    <Eye className="h-4 w-4 text-muted-foreground" />
+                                    <Eye className="h-4 w-4 text-special" />
                                 ) : (
-                                    <EyeClosed className="h-4 w-4 text-muted-foreground" />
+                                    <EyeClosed className="h-4 w-4 text-special" />
                                 )}
                             </button>
                         </div>

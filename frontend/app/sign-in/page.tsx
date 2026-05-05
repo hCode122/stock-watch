@@ -5,7 +5,7 @@ import Link from "next/link"
 const Signin = () => {
     return (
         <div className="flex flex-col md:flex-row min-h-screen bg-[url('/imgs/auth-bg.jpg')] bg-cover bg-center bg-no-repeat overflow-x-hidden">
-            <div className="flex-1 flex flex-col justify-center items-start p-4 sm:p-6 md:p-8 bg-background/95 backdrop-blur-sm md:bg-primary/90">
+            <div className="flex-1 flex flex-col justify-center items-start p-4 sm:p-6 md:p-8  bg-black/95 backdrop-blur-sm md:bg-black/95">
                 <div className="absolute top-4 left-4 flex items-center gap-2 z-10">
                     <CoinsIcon className="h-8 w-8 sm:h-10 sm:w-10 text-special" />
                     <p className="font-bold text-base sm:text-lg text-foreground hidden xs:block">Stock Watch</p>
