@@ -11,6 +11,10 @@ import { captureDailyNetWorth } from "../services/transactionService";
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
+console.log('Alpha Vantage key exists?', !!process.env.ALPHA_VANTAGE_API_KEY);
+console.log('CoinMarket key exists?', !!process.env.COIN_MARKET);
+console.log('Alpha Vantage key length:', process.env.ALPHA_VANTAGE_API_KEY?.length);
+
 const runAllJobs = async () => {
     console.log('Starting daily data refresh...');
     const startTime = Date.now();
@@ -54,7 +58,7 @@ const runAllJobs = async () => {
 nodeCron.schedule('0 20 * * *', runAllJobs);
 
 if (process.env.NODE_ENV !== 'production') {
-
+    
 }
 
 export { runAllJobs };

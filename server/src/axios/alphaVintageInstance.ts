@@ -3,7 +3,7 @@ import { envConfig } from "../config/environment";
 
 export const alphaVintageInstance = axios.create({
     baseURL: 'https://www.alphavantage.co/',
-    timeout: 20000,
+    timeout: 40000,
     params: {
         apikey: envConfig.apis.alphaVantage
     }
