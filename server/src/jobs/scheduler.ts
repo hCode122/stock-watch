@@ -14,12 +14,11 @@ const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 
 const runAllJobs = async () => {
-    console.log('Alpha Vantage key exists?', !!process.env.ALPHA_VANTAGE_API_KEY);
-console.log('CoinMarket key exists?', !!process.env.COIN_MARKET);
-console.log('Alpha Vantage key length:', process.env.ALPHA_VANTAGE_API_KEY?.length);
+
     console.log('Starting daily data refresh...');
     const startTime = Date.now();
-    
+        console.log(process.env.ALPHA_VANTAGE_API_KEY)
+
     try {
         await updateTopChanges();
         console.log('Top changes completed');
@@ -59,7 +58,7 @@ console.log('Alpha Vantage key length:', process.env.ALPHA_VANTAGE_API_KEY?.leng
 nodeCron.schedule('0 20 * * *', runAllJobs);
 
 if (process.env.NODE_ENV !== 'production') {
-    
+    runAllJobs()
 }
 
 export { runAllJobs };
