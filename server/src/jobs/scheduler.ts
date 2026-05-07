@@ -17,7 +17,6 @@ const runAllJobs = async () => {
 
     console.log('Starting daily data refresh...');
     const startTime = Date.now();
-        console.log(process.env.ALPHA_VANTAGE_API_KEY)
 
     try {
         await updateTopChanges();

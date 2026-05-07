@@ -10,25 +10,9 @@ const updateTopChanges = async () => {
     try {
         console.log('Updating top gainer and loser stocks...')
         const response = await alphaVintageInstance.get('/query?function=TOP_GAINERS_LOSERS')
-         // DEBUG: See what Alpha Vantage is actually returning
-        console.log('Full API response:', JSON.stringify(response.data, null, 2));
-        
-        // Check if it's an error message
-        if (response.data['Error Message']) {
-            console.error('API Error Message:', response.data['Error Message']);
-            throw new Error('API Error: ' + response.data['Error Message']);
-        }
-        
-        if (response.data['Information']) {
-            console.error('API Information:', response.data['Information']);
-            throw new Error('API Info: ' + response.data['Information']);
-        }
-        
+     
         const { top_gainers, top_losers, most_actively_traded } = response.data;
         
-        console.log('top_gainers type:', typeof top_gainers);
-        console.log('Is top_gainers array?', Array.isArray(top_gainers));
-
          for (const stock of top_gainers) {
             await client.query(`INSERT INTO top_gainers 
             (ticker, price, change_amount, change_percentage, volume) VALUES
