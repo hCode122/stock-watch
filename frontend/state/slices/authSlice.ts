@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 export interface UserState {
     email: string | null,
@@ -23,28 +23,31 @@ export const AuthSlice = createSlice({
     initialState: initialState,
     reducers: {
         authorize: (state, action) => {
-            state.userId = action.payload.user.id
-            state.username = action.payload.user.username;
+            state.userId = action.payload.user?.id || action.payload.user?.userId;
+            state.username = action.payload.user?.username;
             state.token = action.payload.token;
-            state.email = action.payload.user.email;
-            state.balance = action.payload.user.balance;
+            state.email = action.payload.user?.email;
+            state.balance = action.payload.user?.balance || 0;
             state.isAuthorized = true;
-            localStorage.setItem('token', action.payload.token);
         },
         logout: (state) => {
-            state.userId = null
+            state.userId = null;
             state.username = null;
             state.token = null;
             state.isAuthorized = false;
             localStorage.removeItem('token');
+            localStorage.removeItem('user');
         },
         setBalance: (state, action) => {
-            state.balance = action.payload.balance
+            state.balance = action.payload.balance;
+        },
+        setUser: (state, action) => {
+            state.userId = action.payload.userId;
         }
     }
 })
 
-export const { authorize, logout, setBalance } = AuthSlice.actions;
+export const { authorize, logout, setBalance, setUser } = AuthSlice.actions;
 
 export const selectToken = (state: { user: UserState }) => state.user.token;
 export const selectBalance = (state: {user: UserState}) => state.user.balance;

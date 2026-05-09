@@ -11,6 +11,7 @@ import { Eye, EyeClosed } from 'lucide-react';
 import { useSignUp } from '@/hooks/useSignUp';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import { useGetStockCalcData } from '@/hooks/useGetStockCalcData';
 
 const formSchema = z.object({
         username: z.string().min(3, "Username must be at least 3 characters"),
@@ -33,6 +34,7 @@ const SignUpForm = () => {
  
     const [stage, setStage] = useState(1); 
     const router = useRouter()
+    const {calcData, calcLoading, calcError} = useGetStockCalcData()
     
     const form = useForm<formSchemaType>({
         resolver: zodResolver(formSchema),

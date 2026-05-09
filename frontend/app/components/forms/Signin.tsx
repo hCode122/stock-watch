@@ -13,6 +13,7 @@ import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { authorize } from '@/state/slices/authSlice';
 import { useDispatch } from 'react-redux';
+import { useGetStockCalcData } from '@/hooks/useGetStockCalcData';
 
 
 const formSchema = z.object({
@@ -43,6 +44,7 @@ const SigninForm = () => {
 
     const watchEmail = form.watch("email");
     const watchPw = form.watch('password')
+    const {calcData, calcLoading, calcError} = useGetStockCalcData()
 
     const isStage1Valid = watchEmail?.includes('@') && watchPw?.length >= 8; 
 
@@ -52,8 +54,16 @@ const SigninForm = () => {
         const resp = await useSignIn(data)
         if (resp.success) {
             toast.success("Logged in successfully! Redirecting to dashboard.");
+            localStorage.setItem('token', resp.data.data.token);
+            localStorage.setItem('user', JSON.stringify(resp.data.data.user));
+            
             dispatch(authorize({
-                user: resp.data.data.user,
+                user: {
+                    id: resp.data.data.user.id,
+                    username: resp.data.data.user.username,
+                    email: resp.data.data.user.email,
+                    balance: resp.data.data.user.balance
+                },
                 token: resp.data.data.token
             }))
             router.push('/dashboard');

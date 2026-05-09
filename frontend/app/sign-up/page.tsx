@@ -13,6 +13,15 @@ const SignUp = () => {
 
                 <div className="w-full max-w-md mx-auto mt-12 sm:mt-16 md:mt-0 px-4">
                     <SignUpForm />
+                    
+                    <div className="text-center mt-6">
+                        <p className="text-sm text-muted-foreground">
+                            Already have an account?{' '}
+                            <Link href="/sign-in" className="text-special hover:underline transition-colors">
+                                Sign In
+                            </Link>
+                        </p>
+                    </div>
                 </div>
 
                 <div className="absolute bottom-4 left-4 right-4 md:relative md:bottom-auto md:left-auto md:right-auto md:mt-8 flex flex-wrap items-center justify-center md:justify-start gap-2 text-xs sm:text-sm text-muted-foreground">

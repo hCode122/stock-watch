@@ -56,8 +56,6 @@ const runAllJobs = async () => {
 
 nodeCron.schedule('0 20 * * *', runAllJobs);
 
-if (process.env.NODE_ENV !== 'production') {
-    runAllJobs()
-}
+
 
 export { runAllJobs };

@@ -5,12 +5,13 @@ import Image from "next/image"
 import NavLink from "../NavBar/navLink"
 import { Shield, ArrowRight, CoinsIcon, Menu, X } from "lucide-react"
 import Link from "next/link"
- 
+import { useGetStockCalcData } from "@/hooks/useGetStockCalcData"
+
 export const Hero = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
     const [isHovering, setIsHovering] = useState(false)
-
+    
     const navLinkList = [
         { text: "Dashboard", target: "/dashboard", light: true },
         { text: "Market", target: "/market", light: true }
@@ -23,6 +24,7 @@ export const Hero = () => {
             y: (e.clientY - rect.top) / rect.height * 100
         })
     }
+    const {calcData, calcLoading, calcError} = useGetStockCalcData()
 
     useEffect(() => {
         const handleResize = () => {
@@ -124,12 +126,13 @@ export const Hero = () => {
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-6 sm:mt-8 md:mt-10 justify-center lg:justify-start">
-                        <Button className="bg-special hover:bg-special/80 text-white px-5 sm:px-6 md:px-8 py-4 sm:py-5 md:py-6 text-sm sm:text-base md:text-lg rounded-full transition-all duration-300 hover:scale-105 group">
-                            Create an account
-                            <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" />
+                        <Button  className="bg-special hover:bg-special/80 text-white px-5 sm:px-6 md:px-8 py-4 sm:py-5 md:py-6 text-sm sm:text-base md:text-lg rounded-full transition-all duration-300 hover:scale-105 group">
+                            <Link className="flex items-center " href={'/sign-up'}>Create an account
+                                <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" />
+                            </Link>
                         </Button>
                         <Button variant="outline" className="border-gray-600 bg-secondary text-primary hover:text-secondary hover:bg-primary px-5 sm:px-6 md:px-8 py-4 sm:py-5 md:py-6 text-sm sm:text-base md:text-lg rounded-full transition-all duration-300">
-                            View Demo
+                            <Link href={'/market'}> View Demo </Link>
                         </Button>
                     </div>
 

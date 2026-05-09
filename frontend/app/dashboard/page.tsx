@@ -28,16 +28,7 @@ const Dashboard = () => {
         refreshTransaction();
     }
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            if (!isAuthorized && !token) {
-                router.push('/sign-in');
-            }
-        }, 100);
-        
-        return () => clearTimeout(timer);
-    }, [isAuthorized, token, router]);
-    console.log(networth)
+    
     const isLoading = (!isAuthorized && !token) || loadingPortfolio || loadingNetworth || loadingTransactions;
     if (!isAuthorized && !token) {
         return (
