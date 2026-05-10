@@ -34,7 +34,7 @@ export const ExtraStats = ({ portfolio, networth, loading }: StatsCardsProps) =>
         );
     }
 
-    const cashBalance = portfolio?.cashBalance ?? networth?.balance ?? 0;
+    const cashBalance = networth?.balance ?? portfolio?.cashBalance ?? 0;
     const portfolioValue = portfolio?.totalValue ?? networth?.portfolio_value ?? 0;
     const netWorth = networth?.net_worth ?? (Number(cashBalance) + Number(portfolioValue));
     const holdingsCount = portfolio?.holdings?.length ?? 0;
