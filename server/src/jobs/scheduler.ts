@@ -1,4 +1,3 @@
-import nodeCron from "node-cron";
 import {
     updateCalculations,
     updateCoinMarketOverview,
@@ -19,6 +18,11 @@ const runAllJobs = async () => {
     const startTime = Date.now();
 
     try {
+
+        await captureDailyNetWorth();
+        console.log('Net worth capture completed');
+        await delay(60000);
+
         await updateTopChanges();
         console.log('Top changes completed');
         await delay(30000); 
@@ -41,10 +45,6 @@ const runAllJobs = async () => {
         
         await updateStockPricesTable();
         console.log('Stock prices table completed');
-        await delay(60000);
-        
-        await captureDailyNetWorth();
-        console.log('Net worth capture completed');
         
         const duration = ((Date.now() - startTime) / 1000).toFixed(2);
         console.log(`All jobs completed in ${duration} seconds`);
@@ -53,8 +53,6 @@ const runAllJobs = async () => {
         console.error('Job failed:', error);
     }
 };
-
-nodeCron.schedule('0 20 * * *', runAllJobs);
 
 
 
